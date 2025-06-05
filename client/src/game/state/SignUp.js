@@ -76,9 +76,9 @@ export default class SignUpState extends State {
         username,
         password
       })
-      .then(res => {
-        console.log(res.status);
-      });
+      .then(res  => res.json())
+      .then(data => console.log(data))
+      .catch(err => console.error(err));
       this.#state = 3;
     }
   }
