@@ -1,3 +1,6 @@
+import { GAME_SCALE } from "../game/constants";
+import TextureHandler from "./TextureHandler";
+
 let instance = null;
 
 class _Renderer {
@@ -28,6 +31,17 @@ class _Renderer {
   text(text="", x=0, y=0, color="black") {
     this.#ctx.fillStyle = color;
     this.#ctx.fillText(text, x, y);
+  }
+
+  image(textureID, sx=0, sy=0, sw=TILE_SIZE, sh=TILE_SIZE, dx=0, dy=0, dw=TILE_SIZE, dh=TILE_SIZE) {
+    this.#ctx.drawImage(
+      TextureHandler.getTexture(textureID),
+      sx, sy, sw, sh,
+      Math.floor(dx) * GAME_SCALE,
+      Math.floor(dy) * GAME_SCALE,
+      dw * GAME_SCALE,
+      dh * GAME_SCALE
+    );
   }
 
   imageRaw(img, x=0, y=0) {

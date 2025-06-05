@@ -1,8 +1,8 @@
 import Renderer from "../gfx/Renderer";
 import AssetHandler from "../utils/AssetHandler";
 import { WINDOW_HEIGHT, WINDOW_WIDTH } from "./constants";
+import SignUpState from "./state/SignUp";
 import StateHandler from "./state/StateHandler";
-import TestState from "./state/TestState";
 
 export default class Game {
   #cnv;  // HTML canvas reference
@@ -27,7 +27,7 @@ export default class Game {
   init() {
     Renderer.init(this.#cnv);
 
-    StateHandler.push(new TestState);
+    StateHandler.push(new SignUpState);
 
     this.update(performance.now());
   }

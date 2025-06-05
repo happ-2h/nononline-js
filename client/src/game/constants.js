@@ -4,7 +4,7 @@ export const RES_SCALE = 20; // Resolution scale
 
 // Game constants
 export const GAME_SCALE = 3; // Drawing scale
-export const TILE_SIZE = 16; // Default tile size
+export const TILE_SIZE  = 8; // Default tile size
 export const DEBUG  = true;  // Show debug data
 
 // Window dimensions (browser canvas)
