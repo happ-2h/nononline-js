@@ -1,15 +1,18 @@
 import express from "express";
+import bcrypt from "bcrypt";
+import { createUser, getUsername } from "../database/queries.js"
 
 const usersRouter = express.Router();
 
+const saltRounds = 10;
+
+// Create user
 usersRouter.post('/', async (req, res) => {
   const { username, password } = req.body;
 
   // Input validation
   const uname = username?.trim()?.toLowerCase();
   const pword = password?.trim()?.toLowerCase();
-
-  console.log(/^[a-z]+$/.test(uname));
 
   if (!uname || !pword) {
     return res.status(400).json({
@@ -28,8 +31,23 @@ usersRouter.post('/', async (req, res) => {
   }
 
   // Passed validation
-  console.log(uname, pword);
-  return res.status(201).json({ message: "User created" });
+  const hashedPassword = await bcrypt.hash(pword, saltRounds);
+  const user_id = crypto.randomUUID();
+
+  // Ensure username doesn't exist
+  const isUsernameTaken = getUsername.get(uname);
+
+  if (isUsernameTaken)
+    return res.status(400).json({ error: "Username already exists"});
+
+  // Add user to database
+  const newUser = createUser.get(user_id, uname, hashedPassword);
+
+  return res.status(201).json({
+    message: "User created",
+    user_id: newUser.user_id,
+    username: newUser.username
+  });
 });
 
 export default usersRouter;
