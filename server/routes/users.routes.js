@@ -1,31 +1,35 @@
-// IMPORTANT TODO bcrypt
-
 import express from "express";
 
 const usersRouter = express.Router();
 
-usersRouter.post('/', (req, res) => {
+usersRouter.post('/', async (req, res) => {
   const { username, password } = req.body;
 
   // Input validation
-  const uname = username.trim();
-  const pword = password.trim();
+  const uname = username?.trim()?.toLowerCase();
+  const pword = password?.trim()?.toLowerCase();
+
+  console.log(/^[a-z]+$/.test(uname));
 
   if (!uname || !pword) {
-    res.status(400).json({
+    return res.status(400).json({
       error: "Username and Password cannot be empty"
     });
   }
   else if (uname.length > 10 || pword.length > 10) {
-    res.status(400).json({
+    return res.status(400).json({
       error: "Username and Password must be 10 characters or less"
     });
   }
-  else {
-    res.sendStatus(201);
+  else if (!(/^[a-z]+$/.test(uname)) || !(/^[a-z]+$/.test(pword))) {
+    return res.status(400).json({
+      error: "Username and Password can only be consecutive letters"
+    });
   }
 
-  console.log(username, password);
+  // Passed validation
+  console.log(uname, pword);
+  return res.status(201).json({ message: "User created" });
 });
 
 export default usersRouter;
