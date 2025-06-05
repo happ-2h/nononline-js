@@ -1,6 +1,8 @@
 import express from "express";
 import bcrypt from "bcrypt";
-import { createUser, getUsername } from "../database/queries.js"
+
+import { createUser, getUsername, getUsernamePassword } from "../database/queries.js"
+import { createTokens } from "../auth/JWT.js";
 
 const usersRouter = express.Router();
 
@@ -48,6 +50,44 @@ usersRouter.post('/', async (req, res) => {
     user_id: newUser.user_id,
     username: newUser.username
   });
+});
+
+usersRouter.post('/login', async (req, res) => {
+  const { username, password } = req.body;
+
+  // Input validation
+  const uname = username?.trim();
+  const pword = password?.trim();
+
+  if (!uname || !pword) {
+    return res.status(400).json({
+      error: "Username and Password cannot be empty"
+    });
+  }
+
+  const loginAttempt = getUsernamePassword.get(username);
+
+  if (!loginAttempt) {
+    return res.status(400).json({
+      error: "User not found"
+    });
+  }
+
+  const isValidPassword = await bcrypt.compare(pword, loginAttempt.password);
+
+  if (!isValidPassword) {
+    return res.status(400).json({
+      error: "Incorrect password"
+    });
+  }
+
+  // Login succeeded
+  const accessToken = createTokens(loginAttempt);
+  res.cookie("access-token", accessToken, {
+    maxAge: 60*60
+  });
+
+  return res.status(200).json({ message: "Login successful" });
 });
 
 export default usersRouter;

@@ -26,8 +26,13 @@ const getUserID = database.prepare(`
 SELECT user_id, username FROM users WHERE user_id = ?
 `);
 
+const getUsernamePassword = database.prepare(`
+SELECT user_id, username, password FROM users WHERE username = ?
+`);
+
 export {
   createUser,
   getUsername,
-  getUserID
+  getUserID,
+  getUsernamePassword
 };
