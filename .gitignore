@@ -25,3 +25,5 @@ dist-ssr
 
 # Media project files
 *.aseprite
+
+*.http

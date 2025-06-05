@@ -1,5 +1,6 @@
 import Renderer from "../../gfx/Renderer";
 import Keyboard from "../../gfx/ui/Keyboard";
+import Network from "../../network/Network";
 import { TILE_SIZE } from "../constants";
 import State from "./State";
 
@@ -69,7 +70,16 @@ export default class SignUpState extends State {
     }
     // Submit to database
     else if (this.#state === 2) {
+      const { username, password } = this.#text;
 
+      Network.post("/api/users", {
+        username,
+        password
+      })
+      .then(res => {
+        console.log(res.status);
+      });
+      this.#state = 3;
     }
   }
 
