@@ -1,4 +1,5 @@
 import Renderer from "../../gfx/Renderer";
+import TextureHandler from "../../gfx/TextureHandler";
 import State from "./State";
 
 export default class TestState extends State {
@@ -13,5 +14,6 @@ export default class TestState extends State {
 
   render() {
     Renderer.text("Test State", 100, 100);
+    Renderer.imageRaw(TextureHandler.getTexture("spritesheet"));
   }
 };

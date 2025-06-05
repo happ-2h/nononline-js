@@ -29,6 +29,10 @@ class _Renderer {
     this.#ctx.fillStyle = color;
     this.#ctx.fillText(text, x, y);
   }
+
+  imageRaw(img, x=0, y=0) {
+    this.#ctx.drawImage(img, x, y);
+  }
 };
 
 const Renderer = new _Renderer;

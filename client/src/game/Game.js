@@ -1,4 +1,5 @@
 import Renderer from "../gfx/Renderer";
+import AssetHandler from "../utils/AssetHandler";
 import { WINDOW_HEIGHT, WINDOW_WIDTH } from "./constants";
 import StateHandler from "./state/StateHandler";
 import TestState from "./state/TestState";
@@ -15,7 +16,12 @@ export default class Game {
 
     this.#last = performance.now();
 
-    this.init();
+    // Poll assets
+    AssetHandler.poll("spritesheet", "spritesheet.png");
+
+    AssetHandler.load()
+      .then(val => this.init())
+      .catch(err => console.error(err));
   }
 
   init() {
