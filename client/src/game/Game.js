@@ -1,5 +1,7 @@
 import Renderer from "../gfx/Renderer";
 import { WINDOW_HEIGHT, WINDOW_WIDTH } from "./constants";
+import StateHandler from "./state/StateHandler";
+import TestState from "./state/TestState";
 
 export default class Game {
   #cnv;  // HTML canvas reference
@@ -19,6 +21,8 @@ export default class Game {
   init() {
     Renderer.init(this.#cnv);
 
+    StateHandler.push(new TestState);
+
     this.update(performance.now());
   }
 
@@ -28,11 +32,15 @@ export default class Game {
 
     requestAnimationFrame(this.update.bind(this));
 
+    StateHandler.update(dt);
+
     this.render(dt);
   }
 
   render(dt) {
     Renderer.clear(this.#cnv.width, this.#cnv.height);
+
+    StateHandler.render();
 
     Renderer.text(1/dt, 32, 32);
   }
