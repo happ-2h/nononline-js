@@ -1,4 +1,5 @@
 import Renderer from "../gfx/Renderer";
+import { WINDOW_HEIGHT, WINDOW_WIDTH } from "./constants";
 
 export default class Game {
   #cnv;  // HTML canvas reference
@@ -6,8 +7,8 @@ export default class Game {
 
   constructor() {
     this.#cnv = document.querySelector("canvas");
-    this.#cnv.width = 640;
-    this.#cnv.height = 480;
+    this.#cnv.width  = WINDOW_WIDTH;
+    this.#cnv.height = WINDOW_HEIGHT;
     this.#cnv.autofocus = true;
 
     this.#last = performance.now();
