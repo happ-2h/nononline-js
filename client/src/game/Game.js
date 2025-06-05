@@ -1,13 +1,23 @@
+import Renderer from "../gfx/Renderer";
+
 export default class Game {
-  #last;
+  #cnv;  // HTML canvas reference
+  #last; // Previous RAF timestamp
 
   constructor() {
+    this.#cnv = document.querySelector("canvas");
+    this.#cnv.width = 640;
+    this.#cnv.height = 480;
+    this.#cnv.autofocus = true;
+
     this.#last = performance.now();
 
     this.init();
   }
 
   init() {
+    Renderer.init(this.#cnv);
+
     this.update(performance.now());
   }
 
@@ -17,8 +27,12 @@ export default class Game {
 
     requestAnimationFrame(this.update.bind(this));
 
-    this.render();
+    this.render(dt);
   }
 
-  render() {}
+  render(dt) {
+    Renderer.clear(this.#cnv.width, this.#cnv.height);
+
+    Renderer.text(1/dt, 32, 32);
+  }
 };
