@@ -2,7 +2,7 @@ import express from "express";
 import bcrypt from "bcrypt";
 
 import { createUser, getUsername, getUsernamePassword } from "../database/queries.js"
-import { createTokens } from "../auth/JWT.js";
+import { createTokens, validateToken } from "../auth/JWT.js";
 
 const usersRouter = express.Router();
 
@@ -84,10 +84,15 @@ usersRouter.post('/login', async (req, res) => {
   // Login succeeded
   const accessToken = createTokens(loginAttempt);
   res.cookie("access-token", accessToken, {
-    maxAge: 60*60
+    maxAge: 60*60,
+    httpOnly: true
   });
 
   return res.status(200).json({ message: "Login successful" });
+});
+
+usersRouter.get('/profile', validateToken, (req, res) => {
+  res.sendStatus(200);
 });
 
 export default usersRouter;

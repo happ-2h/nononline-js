@@ -3,8 +3,8 @@ import usersRouter from "./routes/users.routes.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import helmet from "helmet"
+import 'dotenv/config';
 
-const PORT = 5000;
 const app = express();
 
 app.use(helmet());
@@ -14,4 +14,7 @@ app.use(cookieParser());
 
 app.use('/api/users', usersRouter);
 
-app.listen(PORT, () => console.log(`Listening *:${PORT}`));
+app.listen(
+  +process.env.SERVER_PORT,
+  () => console.log(`Listening *:${+process.env.SERVER_PORT}`)
+);
