@@ -2,8 +2,8 @@ import Renderer from "../gfx/Renderer";
 import Network from "../network/Network";
 import AssetHandler from "../utils/AssetHandler";
 import { WINDOW_HEIGHT, WINDOW_WIDTH } from "./constants";
-import SignUpState from "./state/SignUp";
 import StateHandler from "./state/StateHandler";
+import TitleScreenState from "./state/TitleScreenState";
 
 export default class Game {
   #cnv;  // HTML canvas reference
@@ -28,7 +28,7 @@ export default class Game {
   init() {
     Renderer.init(this.#cnv);
 
-    StateHandler.push(new SignUpState);
+    StateHandler.push(new TitleScreenState);
     Network.apiLink = "http://localhost:5000";
 
     this.update(performance.now());

@@ -1,4 +1,4 @@
-import { GAME_SCALE } from "../game/constants";
+import { GAME_SCALE, RES_HEIGHT, RES_WIDTH, SCREEN_HEIGHT, SCREEN_WIDTH, TILE_SIZE } from "../game/constants";
 import TextureHandler from "./TextureHandler";
 
 let instance = null;
@@ -46,6 +46,23 @@ class _Renderer {
 
   imageRaw(img, x=0, y=0) {
     this.#ctx.drawImage(img, x, y);
+  }
+
+  drawGrid() {
+    const w = SCREEN_WIDTH / TILE_SIZE;
+    const h = SCREEN_HEIGHT / TILE_SIZE;
+
+    for (let x = 0; x < w; ++x) {
+      for (let y = 0; y < h; ++y) {
+        this.#ctx.strokeStyle = "black";
+        this.#ctx.strokeRect(
+          x * TILE_SIZE * GAME_SCALE,
+          y*TILE_SIZE*GAME_SCALE,
+          TILE_SIZE * GAME_SCALE,
+          TILE_SIZE * GAME_SCALE
+        );
+      }
+    }
   }
 };
 
