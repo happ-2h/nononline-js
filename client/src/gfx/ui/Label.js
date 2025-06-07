@@ -17,11 +17,19 @@ export default class Label {
 
   draw() {
     [...this.#string].forEach((char, i) => {
-      const sx = char.charCodeAt(0) - 'a'.charCodeAt(0);
+      let sx = char.charCodeAt(0);
+      let sy = 240;
+      if (char >= 'a' && char <= 'z') {
+        sx -= 'a'.charCodeAt(0);
+      }
+      else if (char >= '0' && char <= '9') {
+        sx -= '0'.charCodeAt(0);
+        sy += 8;
+      }
 
       Renderer.image(
         "spritesheet",
-        sx * TILE_SIZE, 240, TILE_SIZE, TILE_SIZE,
+        sx * TILE_SIZE, sy, TILE_SIZE, TILE_SIZE,
         this.#x + i * TILE_SIZE, this.#y,
         TILE_SIZE, TILE_SIZE
       );
