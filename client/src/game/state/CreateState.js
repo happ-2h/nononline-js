@@ -6,6 +6,7 @@ import KeyboardNum from "../../gfx/ui/KeyboardNum";
 import Label from "../../gfx/ui/Label";
 import KeyHandler from "../../input/KeyHandler";
 import { clamp } from "../../math/utils";
+import Network from "../../network/Network";
 import { TILE_SIZE } from "../constants";
 import State from "./State";
 import StateHandler from "./StateHandler";
@@ -99,7 +100,29 @@ export default class CreateState extends State {
               this.#file.puzzle.push(n);
             });
 
-            StateHandler.pop();
+            // Send to database
+            Network.post("/api/puzzles", {
+              title:  this.#file.title,
+              width:  this.#file.width,
+              height: this.#file.height,
+              puzzle: this.#file.puzzle
+            })
+            .then(res => res.json())
+            .then(data => {
+              // Handle error
+              if (data.status === 400) {
+                // TODO inform user of error
+                console.log(data.error);
+              }
+              // Data accepted
+              else if (data.status === 201) {
+                // TODO inform user of acceptance
+                console.log(data.message);
+                console.log(data.puzzle_id);
+                console.log(data.title);
+              }
+            })
+            .catch(err => console.error(err));
           };
           this.#grid = new Array(this.#file.height)
             .fill(0).map(() => new Array(this.#file.width).fill(0));
