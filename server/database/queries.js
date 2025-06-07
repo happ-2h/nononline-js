@@ -49,10 +49,17 @@ VALUES (?, ?, ?, ?, ?)
 RETURNING puzzle_id, title
 `);
 
+const getPuzzles = database.prepare(`
+SELECT * FROM puzzles
+ORDER BY title
+LIMIT ?, ?
+`);
+
 export {
   /*createUser,
   getUsername,
   getUserID,
   getUsernamePassword*/
-  createPuzzle
+  createPuzzle,
+  getPuzzles
 };

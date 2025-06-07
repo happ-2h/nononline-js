@@ -120,6 +120,7 @@ export default class CreateState extends State {
                 console.log(data.message);
                 console.log(data.puzzle_id);
                 console.log(data.title);
+                StateHandler.pop();
               }
             })
             .catch(err => console.error(err));

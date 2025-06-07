@@ -1,6 +1,6 @@
 import express from "express";
 
-import { createPuzzle } from "../database/queries.js";
+import { createPuzzle, getPuzzles } from "../database/queries.js";
 
 const puzzlesRouter = express.Router();
 
@@ -73,6 +73,45 @@ puzzlesRouter.post('/', (req, res) => {
     message: "Puzzle added",
     puzzle_id: newPuzzle.puzzle_id,
     title: newPuzzle.title
+  });
+});
+
+// Get multiple puzzles
+puzzlesRouter.get('/', (req, res) => {
+  const { skip, count } = req.query;
+
+  if (count === undefined) {
+    return res.status(400).json({
+      status: 400,
+      error: "count=<number> query is required"
+    });
+  }
+
+  // Input validation
+  // - Convert input
+  const cnvSkip  = parseInt(skip || 0);
+  const cnvCount = parseInt(count);
+
+  if (isNaN(cnvSkip)) {
+    return res.status(400).json({
+      status: 400,
+      error: "\'skip\' query must be an integer"
+    });
+  }
+
+  if (isNaN(cnvCount)) {
+    return res.status(400).json({
+      status: 400,
+      error: "\'count\' query must be an integer"
+    });
+  }
+
+  // Input passed validation
+  const puzzles = getPuzzles.all(cnvSkip, cnvCount);
+
+  res.status(200).json({
+    status: 200,
+    data: puzzles
   });
 });
 
