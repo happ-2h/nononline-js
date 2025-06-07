@@ -4,6 +4,7 @@ import KeyHandler from "../../input/KeyHandler";
 import { clamp } from "../../math/utils";
 import { TILE_SIZE } from "../constants";
 import CreateState from "./CreateState";
+import PlayState from "./play/PlayState";
 import SettingsState from "./SettingsState";
 import State from "./State";
 import StateHandler from "./StateHandler";
@@ -19,7 +20,10 @@ export default class TitleScreenState extends State {
     super();
 
     this.#btn_play = new Button(120, 24, 8, 3, "Play", 16, 5);
-    this.#btn_play.callback = () => { console.log("PLAY"); }
+    this.#btn_play.callback = () => {
+      this.#cursor.timer = 0;
+      StateHandler.push(new PlayState);
+     }
     this.#btn_create = new Button(120, 40 + 8*3, 8, 3, "create", 7, 5);
     this.#btn_create.callback = () => {
       this.#cursor.timer = 0;
