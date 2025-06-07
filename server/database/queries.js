@@ -30,6 +30,9 @@ const getUsernamePassword = database.prepare(`
 SELECT user_id, username, password FROM users WHERE username = ?
 `);*/
 
+/*
+  MAYBE rating db and date created
+ */
 const initDB = `
 CREATE TABLE IF NOT EXISTS puzzles (
   puzzle_id TEXT PRIMARY KEY NOT NULL UNIQUE,
@@ -55,11 +58,18 @@ ORDER BY title
 LIMIT ?, ?
 `);
 
+const getRandomPuzzle = database.prepare(`
+SELECT * FROM puzzles
+ORDER BY random()
+LIMIT 1
+`);
+
 export {
   /*createUser,
   getUsername,
   getUserID,
   getUsernamePassword*/
   createPuzzle,
-  getPuzzles
+  getPuzzles,
+  getRandomPuzzle
 };

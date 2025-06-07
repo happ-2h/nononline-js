@@ -1,6 +1,6 @@
 import express from "express";
 
-import { createPuzzle, getPuzzles } from "../database/queries.js";
+import { createPuzzle, getPuzzles, getRandomPuzzle } from "../database/queries.js";
 
 const puzzlesRouter = express.Router();
 
@@ -78,7 +78,7 @@ puzzlesRouter.post('/', (req, res) => {
 
 // Get multiple puzzles
 puzzlesRouter.get('/', (req, res) => {
-  const { skip, count } = req.query;
+  const { skip, count, random } = req.query;
 
   if (count === undefined) {
     return res.status(400).json({
@@ -91,6 +91,7 @@ puzzlesRouter.get('/', (req, res) => {
   // - Convert input
   const cnvSkip  = parseInt(skip || 0);
   const cnvCount = parseInt(count);
+  const cnvRandom = parseInt(random || 0);
 
   if (isNaN(cnvSkip)) {
     return res.status(400).json({
@@ -106,8 +107,21 @@ puzzlesRouter.get('/', (req, res) => {
     });
   }
 
+  if (isNaN(cnvRandom)) {
+    return res.status(400).json({
+      status: 400,
+      error: "\'random\' query must be 0 or 1"
+    });
+  }
+
   // Input passed validation
-  const puzzles = getPuzzles.all(cnvSkip, cnvCount);
+  let puzzles = null;
+  if (cnvRandom === 1) {
+    puzzles = getRandomPuzzle.get();
+  }
+  else {
+    puzzles = getPuzzles.all(cnvSkip, cnvCount);
+  }
 
   res.status(200).json({
     status: 200,
