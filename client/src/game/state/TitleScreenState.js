@@ -3,6 +3,7 @@ import Cursor from "../../gfx/ui/Cursor";
 import KeyHandler from "../../input/KeyHandler";
 import { clamp } from "../../math/utils";
 import { TILE_SIZE } from "../constants";
+import CreateState from "./CreateState";
 import SettingsState from "./SettingsState";
 import State from "./State";
 import StateHandler from "./StateHandler";
@@ -20,11 +21,14 @@ export default class TitleScreenState extends State {
     this.#btn_play = new Button(120, 24, 8, 3, "Play", 16, 5);
     this.#btn_play.callback = () => { console.log("PLAY"); }
     this.#btn_create = new Button(120, 40 + 8*3, 8, 3, "create", 7, 5);
-    this.#btn_create.callback = () => { console.log("CREATE"); }
+    this.#btn_create.callback = () => {
+      this.#cursor.timer = 0;
+      StateHandler.push(new CreateState);
+    }
     this.#btn_settings = new Button(120, 40 + 8 * 8, 8, 3, "settings", 0, 5);
     this.#btn_settings.callback = () => {
       this.#cursor.timer = 0;
-      StateHandler.push(new SettingsState());
+      StateHandler.push(new SettingsState);
     }
 
     this.#cursor = new Cursor(120 - TILE_SIZE, 24 + 16, 0.3, 0, 208);

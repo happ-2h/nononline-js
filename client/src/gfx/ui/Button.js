@@ -111,5 +111,10 @@ export default class Button {
   get label() { return this.#label; }
   get callback() { return this.#callback; }
 
+  set x(x) { this.#x = x; }
+  set y(y) { this.#y = y; }
+  set width(w) { this.#width = w; }
+  set height(h) { this.#height = h; }
+  set label(l) { this.#label = l; }
   set callback(cb) { this.#callback = cb; }
 };
