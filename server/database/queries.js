@@ -52,6 +52,11 @@ VALUES (?, ?, ?, ?, ?)
 RETURNING puzzle_id, title
 `);
 
+const getPuzzle = database.prepare(`
+SELECT * FROM puzzles
+WHERE puzzle_id = ?
+`);
+
 const getPuzzles = database.prepare(`
 SELECT * FROM puzzles
 ORDER BY title
@@ -70,6 +75,7 @@ export {
   getUserID,
   getUsernamePassword*/
   createPuzzle,
+  getPuzzle,
   getPuzzles,
   getRandomPuzzle
 };

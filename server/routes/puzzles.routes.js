@@ -1,6 +1,6 @@
 import express from "express";
 
-import { createPuzzle, getPuzzles, getRandomPuzzle } from "../database/queries.js";
+import { createPuzzle, getPuzzle, getPuzzles, getRandomPuzzle } from "../database/queries.js";
 
 const puzzlesRouter = express.Router();
 
@@ -126,6 +126,34 @@ puzzlesRouter.get('/', (req, res) => {
   res.status(200).json({
     status: 200,
     data: puzzles
+  });
+});
+
+puzzlesRouter.get('/puzzle/:id', (req, res) => {
+  const { id } = req.params;
+
+  // Input validation
+  const cnvId = id?.toString()?.trim();
+
+  if (
+    !cnvId ||
+    !(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(cnvId))
+  ) {
+    return res.status(400).json({
+      status: 400,
+      error: "Incorrect parameter format"
+    });
+  }
+
+  const puzzle = getPuzzle.get(cnvId);
+
+  res.status(200).json({
+    status: 200,
+    id:     puzzle.puzzle_id,
+    title:  puzzle.title,
+    width:  puzzle.width,
+    height: puzzle.height,
+    puzzle: puzzle.puzzle
   });
 });
 
