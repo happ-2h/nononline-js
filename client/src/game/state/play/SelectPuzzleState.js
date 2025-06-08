@@ -3,6 +3,8 @@ import Label from "../../../gfx/ui/Label";
 import KeyHandler from "../../../input/KeyHandler";
 import { clamp } from "../../../math/utils";
 import State from "../State";
+import StateHandler from "../StateHandler";
+import SolveState from "./SolveState";
 
 export default class SelectPuzzleState extends State {
   #puzzleData;
@@ -46,7 +48,8 @@ export default class SelectPuzzleState extends State {
         this.#cursor.timer = 0;
 
         const selectedPuzzle = this.#puzzleData[this.#cursor.y / 8];
-        console.log(selectedPuzzle);
+        StateHandler.pop();
+        StateHandler.push(new SolveState(selectedPuzzle));
       }
     }
   }
