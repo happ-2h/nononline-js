@@ -1,4 +1,3 @@
-import { TILE_SIZE } from "../../game/constants";
 import Renderer from "../Renderer";
 
 export default class Label {
@@ -9,7 +8,7 @@ export default class Label {
 
   #callback;
 
-  constructor(x=0, y=0, string="", id="") {
+  constructor(string="", x=0, y=0, id="") {
     this.#id = id;
     this.#x = x;
     this.#y = y;
@@ -18,24 +17,7 @@ export default class Label {
   }
 
   draw() {
-    [...this.#string].forEach((char, i) => {
-      let sx = char.charCodeAt(0);
-      let sy = 240;
-      if (char >= 'a' && char <= 'z') {
-        sx -= 'a'.charCodeAt(0);
-      }
-      else if (char >= '0' && char <= '9') {
-        sx -= '0'.charCodeAt(0);
-        sy += 8;
-      }
-
-      Renderer.image(
-        "spritesheet",
-        sx * TILE_SIZE, sy, TILE_SIZE, TILE_SIZE,
-        this.#x + i * TILE_SIZE, this.#y,
-        TILE_SIZE, TILE_SIZE
-      );
-    });
+    Renderer.imageText(this.#string, this.#x, this.#y);
   }
 
   get id() { return this.#id; }
