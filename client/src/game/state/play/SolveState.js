@@ -4,6 +4,8 @@ import KeyHandler from "../../../input/KeyHandler";
 import { clamp } from "../../../math/utils";
 import { TILE_SIZE } from "../../constants";
 import State from "../State";
+import StateHandler from "../StateHandler";
+import WinState from "./WinState";
 
 export default class SolveState extends State {
   #puzzle;
@@ -136,7 +138,8 @@ export default class SolveState extends State {
         this.#board[cursory][cursorx] = this.#board[cursory][cursorx] !== 1 ? 1 : 0;
 
         if (this.#didWin()) {
-          console.log("WINNER");
+          StateHandler.pop();
+          StateHandler.push(new WinState(this.#board_sol));
         }
       }
     }

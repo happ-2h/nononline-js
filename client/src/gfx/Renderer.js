@@ -48,6 +48,27 @@ class _Renderer {
     this.#ctx.drawImage(img, x, y);
   }
 
+  rect(x=0, y=0, width=0, height=0, filled=true, color="black") {
+    if (filled) {
+      this.#ctx.fillStyle = color;
+      this.#ctx.fillRect(
+        x * GAME_SCALE,
+        y * GAME_SCALE,
+        width  * GAME_SCALE,
+        height * GAME_SCALE,
+      );
+    }
+    else {
+      this.#ctx.strokeStyle = color;
+      this.#ctx.strokeRect(
+        x * GAME_SCALE,
+        y * GAME_SCALE,
+        width  * GAME_SCALE,
+        height * GAME_SCALE,
+      );
+    }
+  }
+
   drawGrid() {
     const w = SCREEN_WIDTH / TILE_SIZE;
     const h = SCREEN_HEIGHT / TILE_SIZE;
