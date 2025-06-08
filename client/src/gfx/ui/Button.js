@@ -1,5 +1,6 @@
 import { TILE_SIZE } from "../../game/constants";
 import Renderer from "../Renderer";
+import Label from "./Label";
 
 export default class Button {
   #x;
@@ -7,14 +8,10 @@ export default class Button {
   #width;
   #height;
 
-  #padx;
-  #pady;
-
   #sx;
   #sy;
 
   #label;
-
   #callback;
 
   constructor(x=0, y=0, width=0, height=0, label="", padx=0, pady=0) {
@@ -22,32 +19,18 @@ export default class Button {
     this.#y = y;
     this.#width = width;
     this.#height = height;
-    this.#label = label;
     this.#sx = 0;
     this.#sy = 216;
-    this.#padx = padx;
-    this.#pady = pady;
-
+    this.#label = new Label(label, x + TILE_SIZE + padx, y + TILE_SIZE + pady);
     this.#callback = () => {};
   }
 
   draw() {
-    this.drawFrame();
-    [...this.#label].forEach((char, i) => {
-      char = char.toLowerCase();
-      const csx = char.charCodeAt(0) - 'a'.charCodeAt(0);
-
-      Renderer.image(
-        "spritesheet",
-        csx * TILE_SIZE, 240, TILE_SIZE, TILE_SIZE,
-        (this.#x + TILE_SIZE + i*TILE_SIZE) + this.#padx,
-        (this.#y + TILE_SIZE) + this.#pady,
-        TILE_SIZE, TILE_SIZE
-      );
-    });
+    this.#drawFrame();
+    this.#label.draw();
   }
 
-  drawFrame() {
+  #drawFrame() {
     // - Top left
     Renderer.image(
       "spritesheet",
@@ -116,5 +99,7 @@ export default class Button {
   set width(w) { this.#width = w; }
   set height(h) { this.#height = h; }
   set label(l) { this.#label = l; }
+  set padx(px) { this.#label.x = this.#x + TILE_SIZE + px; }
+  set pady(py) { this.#label.y = this.#y + TILE_SIZE + py; }
   set callback(cb) { this.#callback = cb; }
 };
