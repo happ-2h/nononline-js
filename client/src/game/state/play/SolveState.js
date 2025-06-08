@@ -1,4 +1,7 @@
 import Renderer from "../../../gfx/Renderer";
+import Cursor from "../../../gfx/ui/Cursor";
+import KeyHandler from "../../../input/KeyHandler";
+import { clamp } from "../../../math/utils";
 import { TILE_SIZE } from "../../constants";
 import State from "../State";
 
@@ -8,6 +11,8 @@ export default class SolveState extends State {
   #board_sol;
   #nums_cols;
   #nums_rows;
+
+  #cursor;
 
   constructor(puzzle) {
     super();
@@ -81,6 +86,8 @@ export default class SolveState extends State {
     // Reverse for canvas placement
     this.#nums_cols.forEach(arr => arr.reverse());
     this.#nums_rows.forEach(arr => arr.reverse());
+
+    this.#cursor = new Cursor(50, 50, 0.3, 8, 192);
   }
 
   onEnter() {}
@@ -88,7 +95,34 @@ export default class SolveState extends State {
 
   init() {}
 
-  update(dt) {}
+  update(dt) {
+    this.#cursor.timer += dt;
+
+    if (KeyHandler.isDown(37)) {
+      if (this.#cursor.timer >= this.#cursor.delay) {
+        this.#cursor.timer = 0;
+        this.#cursor.x = clamp(this.#cursor.x - 8, 50, 50 + 8 * (this.#board[0].length-1));
+      }
+    }
+    else if (KeyHandler.isDown(39)) {
+      if (this.#cursor.timer >= this.#cursor.delay) {
+        this.#cursor.timer = 0;
+        this.#cursor.x = clamp(this.#cursor.x + 8, 50, 50 + 8 * (this.#board[0].length-1));
+      }
+    }
+    else if (KeyHandler.isDown(38)) {
+      if (this.#cursor.timer >= this.#cursor.delay) {
+        this.#cursor.timer = 0;
+        this.#cursor.y = clamp(this.#cursor.y - 8, 50, 50 + 8 * (this.#board.length-1));
+      }
+    }
+    else if (KeyHandler.isDown(40)) {
+      if (this.#cursor.timer >= this.#cursor.delay) {
+        this.#cursor.timer = 0;
+        this.#cursor.y = clamp(this.#cursor.y + 8, 50, 50 + 8 * (this.#board.length-1));
+      }
+    }
+  }
 
   render() {
     // Draw board
@@ -173,6 +207,8 @@ export default class SolveState extends State {
         }
       }
     }
+
+    this.#cursor.draw();
   }
 
 
