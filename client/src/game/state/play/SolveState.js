@@ -20,7 +20,9 @@ export default class SolveState extends State {
     this.#board =
       new Array(puzzle.height).fill(0)
       .map(() => new Array(puzzle.width).fill(0));
-    this.#board_sol = [...this.#board];
+    this.#board_sol =
+      new Array(puzzle.height).fill(0)
+      .map(() => new Array(puzzle.width).fill(0));
 
     this.#board_sol.forEach((row, y) => {
       let solRow = parseInt(puzzle.puzzle.split(",")[y]).toString(2).padStart(puzzle.width, '0');
@@ -87,7 +89,7 @@ export default class SolveState extends State {
     this.#nums_cols.forEach(arr => arr.reverse());
     this.#nums_rows.forEach(arr => arr.reverse());
 
-    this.#cursor = new Cursor(50, 50, 0.3, 8, 192);
+    this.#cursor = new Cursor(50, 50, 0.2, 8, 192);
   }
 
   onEnter() {}
@@ -122,10 +124,57 @@ export default class SolveState extends State {
         this.#cursor.y = clamp(this.#cursor.y + 8, 50, 50 + 8 * (this.#board.length-1));
       }
     }
+
+    // Markers
+    // - Set
+    if (KeyHandler.isDown(49)) {
+      if (this.#cursor.timer >= this.#cursor.delay) {
+        this.#cursor.timer = 0;
+        let cursorx = (this.#cursor.x - 50) / 8;
+        let cursory = (this.#cursor.y - 50) / 8;
+
+        this.#board[cursory][cursorx] = this.#board[cursory][cursorx] !== 1 ? 1 : 0;
+      }
+    }
+    // - Cross
+    else if (KeyHandler.isDown(50)) {
+      if (this.#cursor.timer >= this.#cursor.delay) {
+        this.#cursor.timer = 0;
+        let cursorx = (this.#cursor.x - 50) / 8;
+        let cursory = (this.#cursor.y - 50) / 8;
+
+        this.#board[cursory][cursorx] = this.#board[cursory][cursorx] !== 2 ? 2 : 0;
+      }
+    }
+    // - Mark
+    else if (KeyHandler.isDown(51)) {
+      if (this.#cursor.timer >= this.#cursor.delay) {
+        this.#cursor.timer = 0;
+        let cursorx = (this.#cursor.x - 50) / 8;
+        let cursory = (this.#cursor.y - 50) / 8;
+
+        this.#board[cursory][cursorx] = this.#board[cursory][cursorx] !== 3 ? 3 : 0;
+      }
+    }
   }
 
   render() {
     // Draw board
+    this.#board.forEach((row, y) => {
+      row.forEach((num, x) => {
+        if (num > 0) {
+          Renderer.image(
+            "spritesheet",
+            num * TILE_SIZE, 200, TILE_SIZE, TILE_SIZE,
+            50 + x * TILE_SIZE,
+            50 + y * TILE_SIZE,
+            TILE_SIZE, TILE_SIZE
+          )
+        }
+      });
+    });
+
+    // Draw grid
     for (let x = 0; x < this.#puzzle.width; ++x) {
       for (let y = 0; y < this.#puzzle.height; ++y) {
         Renderer.image(
@@ -210,6 +259,4 @@ export default class SolveState extends State {
 
     this.#cursor.draw();
   }
-
-
 };
