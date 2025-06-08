@@ -1,3 +1,4 @@
+import Renderer from "../../gfx/Renderer";
 import Button from "../../gfx/ui/Button";
 import Cursor from "../../gfx/ui/Cursor";
 import KeyHandler from "../../input/KeyHandler";
@@ -85,5 +86,8 @@ export default class TitleScreenState extends State {
     this.#btn_create.draw();
     this.#btn_settings.draw();
     this.#cursor.draw();
+
+    Renderer.imageText("Label test 123,456,7890", 32, 16);
+    Renderer.drawGrid();
   }
 };

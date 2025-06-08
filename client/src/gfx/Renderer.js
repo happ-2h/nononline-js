@@ -44,6 +44,28 @@ class _Renderer {
     );
   }
 
+  imageText(text="", x=0, y=0) {
+    text = text?.toString()?.toLowerCase();
+
+    text.split('').forEach((c, cx) => {
+      let n = c.charCodeAt(0);
+      let sy = 240;
+
+      if (c >= 'a' && c <= 'z') n -=  97;
+      else if (c >= '0' && c <= '9') {
+        n -= 48;
+        sy += 8;
+      }
+      this.image(
+        "spritesheet",
+        n * TILE_SIZE, sy,
+        TILE_SIZE, TILE_SIZE,
+        x + cx * TILE_SIZE, y,
+        TILE_SIZE, TILE_SIZE
+      );
+    });
+  }
+
   imageRaw(img, x=0, y=0) {
     this.#ctx.drawImage(img, x, y);
   }
