@@ -134,6 +134,10 @@ export default class SolveState extends State {
         let cursory = (this.#cursor.y - 50) / 8;
 
         this.#board[cursory][cursorx] = this.#board[cursory][cursorx] !== 1 ? 1 : 0;
+
+        if (this.#didWin()) {
+          console.log("WINNER");
+        }
       }
     }
     // - Cross
@@ -258,5 +262,16 @@ export default class SolveState extends State {
     }
 
     this.#cursor.draw();
+  }
+
+  #didWin() {
+    for (let y = 0; y < this.#board.length; ++y) {
+      for (let x = 0; x < this.#board[0].length; ++x) {
+        if (this.#board_sol[y][x] === 1 && this.#board[y][x] !== 1)
+          return false;
+      }
+    }
+
+    return true;
   }
 };
