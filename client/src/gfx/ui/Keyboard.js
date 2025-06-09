@@ -14,17 +14,28 @@ export default class Keyboard {
 
   #font_y;
 
-  constructor(x=0, y=0) {
+  constructor(x=0, y=0, type="text") {
     this.#x = x;
     this.#y = y;
-    this.#font_y = 240;
+    this.#font_y = 8;
 
-    this.#layout = [
-      ['a', 'b', 'c', 'd', 'e', 'f', 'g'],
-      ['h', 'i', 'j', 'k', 'l', 'm', 'n'],
-      ['o', 'p', 'q', 'r', 's', 't', 'u'],
-      ['v', 'w', 'x', 'y', 'z', '<', '@']
-    ];
+    if (type === "number") {
+      this.#font_y = 16;
+      this.#layout = [
+        ['1', '2', '3'],
+        ['4', '5', '6'],
+        ['7', '8', '9'],
+        ['<', '0', '@']
+      ];
+    }
+    else {
+      this.#layout = [
+        ['a', 'b', 'c', 'd', 'e', 'f', 'g'],
+        ['h', 'i', 'j', 'k', 'l', 'm', 'n'],
+        ['o', 'p', 'q', 'r', 's', 't', 'u'],
+        ['v', 'w', 'x', 'y', 'z', '<', '@']
+      ];
+    }
 
     this.#cursor = new Cursor(x, y);
     this.#string = "";
@@ -46,25 +57,25 @@ export default class Keyboard {
     if (KeyHandler.isDown(37)) {
       if (this.#cursor.timer >= this.#cursor.delay) {
         this.#cursor.timer = 0;
-        this.#cursor.x = clamp(this.#cursor.x - 8, this.#x, this.#x + (this.#layout[0].length-1) * TILE_SIZE);
+        this.#cursor.x = clamp(this.#cursor.x - 16, this.#x, this.#x + (this.#layout[0].length-1) * 16);
       }
     }
     else if (KeyHandler.isDown(39)) {
       if (this.#cursor.timer >= this.#cursor.delay) {
         this.#cursor.timer = 0;
-        this.#cursor.x = clamp(this.#cursor.x + 8, this.#x, this.#x + (this.#layout[0].length-1) * TILE_SIZE);
+        this.#cursor.x = clamp(this.#cursor.x + 16, this.#x, this.#x + (this.#layout[0].length-1) * 16);
       }
     }
     else if (KeyHandler.isDown(38)) {
       if (this.#cursor.timer >= this.#cursor.delay) {
         this.#cursor.timer = 0;
-        this.#cursor.y = clamp(this.#cursor.y - 8, this.#y, this.#y + (this.#layout.length-1) * TILE_SIZE);
+        this.#cursor.y = clamp(this.#cursor.y - 16, this.#y, this.#y + (this.#layout.length-1) * 16);
       }
     }
     else if (KeyHandler.isDown(40)) {
       if (this.#cursor.timer >= this.#cursor.delay) {
         this.#cursor.timer = 0;
-        this.#cursor.y = clamp(this.#cursor.y + 8, this.#y, this.#y + (this.#layout.length-1) * TILE_SIZE);
+        this.#cursor.y = clamp(this.#cursor.y + 16, this.#y, this.#y + (this.#layout.length-1) * 16);
       }
     }
 
@@ -72,56 +83,65 @@ export default class Keyboard {
       if (this.#cursor.timer >= this.#cursor.delay) {
         this.#cursor.timer = 0;
 
-        const cx = (this.#cursor.x - this.#x) / TILE_SIZE;
-        const cy = (this.#cursor.y - this.#y) / TILE_SIZE;
+        const cx = (this.#cursor.x - this.#x) / 16;
+        const cy = (this.#cursor.y - this.#y) / 16;
         const char = this.#layout[cy][cx];
 
-        if (char >= 'a' && char <= 'z' && this.#string.length < 10) {
+        if (
+          ((char >= 'a' && char <= 'z')  ||
+           (char >= '0' && char <= '9')) &&
+          this.#string.length < 10
+        )
           this.#string += this.#layout[cy][cx];
-        }
-        else if (char === '<') {
+        else if (char === '<')
           this.#string = this.#string.slice(0, -1);
-        }
-        else if (char === '@') {
+        else if (char === '@')
           this.#submitted = true;
-        }
       }
     }
   }
 
   draw() {
     this.#layout.forEach((row, y) => {
-      row.forEach((col, x) => {
-        if (col >= 'a' && col <= 'z') {
-          const sx = col.charCodeAt(0) - 'a'.charCodeAt(0);
-          Renderer.image(
-            "spritesheet",
-            sx<<3, this.#font_y,
-            TILE_SIZE, TILE_SIZE,
-            this.#x + (x * TILE_SIZE), this.#y + (y * TILE_SIZE),
-            TILE_SIZE, TILE_SIZE
-          )
+      row.forEach((char, x) => {
+        let sx = char.charCodeAt(0);
+        let sy = this.#font_y;
+
+        if      (char >= 'a' && char <= 'z') sx = (sx - 97)<<3;
+        else if (char >= '0' && char <= '9') sx = (sx - 48)<<3;
+        else if (char === '<') {
+          sx = 208;
+          sy = 8;
         }
-        else if (col === '<') {
-          Renderer.image(
-            "spritesheet",
-            216, this.#font_y, TILE_SIZE, TILE_SIZE,
-            this.#x + x * TILE_SIZE, this.#y + y * TILE_SIZE,
-            TILE_SIZE, TILE_SIZE
-          )
+        else if (char === '@') {
+          sx = 216;
+          sy = 8;
         }
-        else if (col === '@') {
-          Renderer.image(
-            "spritesheet",
-            224, this.#font_y, TILE_SIZE, TILE_SIZE,
-            this.#x + x * TILE_SIZE, this.#y + y * TILE_SIZE,
-            TILE_SIZE, TILE_SIZE
-          )
-        }
+
+        // Key
+        const cx = (this.#cursor.x - this.#x) / 16;
+        const cy = (this.#cursor.y - this.#y) / 16;
+        const cchar = this.#layout[cy][cx];
+
+        Renderer.image(
+          "spritesheet",
+          (char === cchar)<<4, 24, 16, 16,
+          this.#x + x * 16,
+          this.#y + y * 16,
+          16, 16
+        );
+
+        // Character
+        Renderer.image(
+          "spritesheet",
+          sx, sy,
+          TILE_SIZE, TILE_SIZE,
+          this.#x + 5 + x * 16,
+          this.#y + 2 + y * 16,
+          TILE_SIZE, TILE_SIZE
+        );
       });
     });
-
-    this.#cursor.draw();
   }
 
   get string()    { return this.#string; }

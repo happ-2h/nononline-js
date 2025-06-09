@@ -2,7 +2,6 @@ import Renderer from "../../gfx/Renderer";
 import Button from "../../gfx/ui/Button";
 import Cursor from "../../gfx/ui/Cursor";
 import Keyboard from "../../gfx/ui/Keyboard";
-import KeyboardNum from "../../gfx/ui/KeyboardNum";
 import Label from "../../gfx/ui/Label";
 import KeyHandler from "../../input/KeyHandler";
 import { clamp } from "../../math/utils";
@@ -36,7 +35,7 @@ export default class CreateState extends State {
     this.#label_height = new Label(10, 26, "height");
     this.#btn_submit   = new Button(10, 34, 6, 2, "submit");
     this.#keyboard = new Keyboard(100, 100);
-    this.#keyboardNum = new KeyboardNum(100, 100);
+    this.#keyboardNum = new Keyboard(100, 100, "number");
     this.#file = {
       title: "",
       width: 0,

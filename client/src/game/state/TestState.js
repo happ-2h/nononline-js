@@ -1,19 +1,26 @@
 import Renderer from "../../gfx/Renderer";
-import TextureHandler from "../../gfx/TextureHandler";
+import Keyboard from "../../gfx/ui/Keyboard";
 import State from "./State";
 
 export default class TestState extends State {
-  constructor() { super(); }
+  #keyboard;
+
+  constructor() {
+    super();
+    this.#keyboard = new Keyboard(100, 100, "number");
+  }
 
   onEnter() {}
   onExit() {}
 
   init() {}
 
-  update(dt) {}
+  update(dt) {
+    this.#keyboard.update(dt);
+  }
 
   render() {
-    Renderer.text("Test State", 100, 100);
-    Renderer.imageRaw(TextureHandler.getTexture("spritesheet"));
+    Renderer.imageText(this.#keyboard.string, 50, 32);
+    this.#keyboard.draw();
   }
 };

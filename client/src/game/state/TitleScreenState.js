@@ -1,7 +1,6 @@
 import Renderer from "../../gfx/Renderer";
 import Button from "../../gfx/ui/Button";
 import Cursor from "../../gfx/ui/Cursor";
-import Label from "../../gfx/ui/Label";
 import KeyHandler from "../../input/KeyHandler";
 import { clamp } from "../../math/utils";
 import { TILE_SIZE } from "../constants";
@@ -88,7 +87,6 @@ export default class TitleScreenState extends State {
     this.#btn_settings.draw();
     this.#cursor.draw();
 
-    new Label("label test 123,456,789,0", 32, 16).draw();
     Renderer.drawGrid();
   }
 };
