@@ -1,8 +1,5 @@
-import Renderer from "../../gfx/Renderer";
 import Button from "../../gfx/ui/Button";
 import Cursor from "../../gfx/ui/Cursor";
-import KeyHandler from "../../input/KeyHandler";
-import { clamp } from "../../math/utils";
 import { TILE_SIZE } from "../constants";
 import CreateState from "./CreateState";
 import PlayState from "./play/PlayState";
@@ -36,7 +33,13 @@ export default class TitleScreenState extends State {
       StateHandler.push(new SettingsState);
     }
 
-    this.#cursor = new Cursor(120 - TILE_SIZE, 24 + 16, 0.3, 0, 208);
+    this.#cursor = new Cursor(
+      120 - TILE_SIZE,
+      24 + 14,
+      120-TILE_SIZE, 120-TILE_SIZE,
+      24 + 14, (40 + 8 * 8) + 14,
+      40, 0.3, true
+    );
   }
 
   onEnter() {}
@@ -45,40 +48,16 @@ export default class TitleScreenState extends State {
   init() {}
 
   update(dt) {
-    this.#cursor.timer += dt;
+    this.#cursor.update(dt);
 
-    if (KeyHandler.isDown(38)) {
-      if (this.#cursor.timer >= this.#cursor.delay) {
-        this.#cursor.timer = 0;
-        this.#cursor.y = clamp(this.#cursor.y - 40, 24+16, 40 + 8 * 8);
-      }
+    if (this.#cursor.selected) {
+      if (this.#cursor.y <= this.#btn_play.y + this.#btn_play.height*8)
+        this.#btn_play.callback();
+      else if (this.#cursor.y <= this.#btn_create.y + this.#btn_create.height*8)
+        this.#btn_create.callback();
+      else if (this.#cursor.y <= this.#btn_settings.y + this.#btn_settings.height*8)
+        this.#btn_settings.callback();
     }
-    else if (KeyHandler.isDown(40)) {
-      if (this.#cursor.timer >= this.#cursor.delay) {
-        this.#cursor.timer = 0;
-        this.#cursor.y = clamp(this.#cursor.y + 40, 24, (40 + 8 * 8) + 16);
-      }
-    }
-    else if (KeyHandler.isDown(13)) {
-      if (this.#cursor.timer >= this.#cursor.delay) {
-        if (this.#cursor.y <= this.#btn_play.y + this.#btn_play.height*8) {
-          this.#btn_play.callback();
-          this.#cursor.timer = 0;
-        }
-        else if (this.#cursor.y <= this.#btn_create.y + this.#btn_create.height*8) {
-          this.#btn_create.callback();
-          this.#cursor.timer = 0;
-        }
-        else if (this.#cursor.y <= this.#btn_settings.y + this.#btn_settings.height*8) {
-          this.#btn_settings.callback();
-          this.#cursor.timer = 0;
-        }
-      }
-
-    }
-
-    // Animation
-    this.#cursor.x = (120 - TILE_SIZE) + (4*Math.cos(this.#cursor.timer * 20));
   }
 
   render() {
@@ -86,7 +65,5 @@ export default class TitleScreenState extends State {
     this.#btn_create.draw();
     this.#btn_settings.draw();
     this.#cursor.draw();
-
-    Renderer.drawGrid();
   }
 };
