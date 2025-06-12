@@ -4,7 +4,6 @@ import Cursor from "../../gfx/ui/Cursor";
 import Keyboard from "../../gfx/ui/Keyboard";
 import Label from "../../gfx/ui/Label";
 import KeyHandler from "../../input/KeyHandler";
-import { clamp } from "../../math/utils";
 import Network from "../../network/Network";
 import { TILE_SIZE } from "../constants";
 import State from "./State";
@@ -19,6 +18,8 @@ export default class CreateState extends State {
   #state;
   #keyboard;
   #keyboardNum;
+  #submit_timer;
+  #submit_delay;
 
   #grid;
   #cursor;
@@ -30,9 +31,9 @@ export default class CreateState extends State {
 
     this.#highlight = 0;
     this.#state = 0;
-    this.#label_title  = new Label(10, 10, "title");
-    this.#label_width  = new Label(10, 18, "width");
-    this.#label_height = new Label(10, 26, "height");
+    this.#label_title  = new Label("title", 10, 10);
+    this.#label_width  = new Label("width", 10, 18);
+    this.#label_height = new Label("height", 10, 26);
     this.#btn_submit   = new Button(10, 34, 6, 2, "submit");
     this.#keyboard = new Keyboard(100, 100);
     this.#keyboardNum = new Keyboard(100, 100, "number");
@@ -43,7 +44,11 @@ export default class CreateState extends State {
       puzzle: []
     };
     this.#grid = null;
-    this.#cursor = new Cursor(100, 40, 0.3, 208, 240);
+    this.#cursor = null;
+
+    // Final puzzle submission to database
+    this.#submit_timer = 0;
+    this.#submit_delay = 0.3;
   }
 
   onEnter() {}
@@ -86,7 +91,7 @@ export default class CreateState extends State {
       else {
         if (KeyHandler.isDown(13)) {
           this.#state = 1;
-          this.#btn_submit.label = "enter";
+          this.#btn_submit.label.string = "enter";
           this.#btn_submit.callback = () => {
             this.#grid.forEach(row => {
               let n = 0;
@@ -126,50 +131,33 @@ export default class CreateState extends State {
           };
           this.#grid = new Array(this.#file.height)
             .fill(0).map(() => new Array(this.#file.width).fill(0));
+          console.log(100 + 8 * (this.#grid[0].length - 1));
+          this.#cursor = new Cursor(
+            100 - 8, 40,
+            100 - 8, 100 + 8 * (this.#grid[0].length-2),
+            40, 40 + 8 * (this.#grid.length-1),
+            8, 0.3, false
+          );
         }
       }
     }
     // Drawing
     else if (this.#state === 1) {
-      this.#cursor.timer += dt;
+     this.#submit_timer += dt;
 
-      if (KeyHandler.isDown(37)) {
-        if (this.#cursor.timer >= this.#cursor.delay) {
-          this.#cursor.timer = 0;
-          this.#cursor.x = clamp(this.#cursor.x - 8, 100, 100 + 8 * (this.#grid[0].length-1));
-        }
-      }
-      else if (KeyHandler.isDown(39)) {
-        if (this.#cursor.timer >= this.#cursor.delay) {
-          this.#cursor.timer = 0;
-          this.#cursor.x = clamp(this.#cursor.x + 8, 100, 100 + 8 * (this.#grid[0].length-1));
-        }
-      }
-      else if (KeyHandler.isDown(38)) {
-        if (this.#cursor.timer >= this.#cursor.delay) {
-          this.#cursor.timer = 0;
-          this.#cursor.y = clamp(this.#cursor.y - 8, 40, 40 + 8 * (this.#grid.length-1));
-        }
-      }
-      else if (KeyHandler.isDown(40)) {
-        if (this.#cursor.timer >= this.#cursor.delay) {
-          this.#cursor.timer = 0;
-          this.#cursor.y = clamp(this.#cursor.y + 8, 40, 40 + 8 * (this.#grid.length-1));
-        }
+      this.#cursor.update(dt);
+
+      // Set tile
+      if (this.#cursor.selected) {
+        const gx = Math.floor((this.#cursor.x - 100 + 8) / TILE_SIZE);
+        const gy = Math.floor((this.#cursor.y - 40) / TILE_SIZE);
+        this.#grid[gy][gx] = (!this.#grid[gy][gx]&1);
       }
 
-      if (KeyHandler.isDown(69)) {
-        if (this.#cursor.timer >= this.#cursor.delay) {
-          this.#cursor.timer = 0;
-          const gx = Math.floor((this.#cursor.x - 100) / TILE_SIZE);
-          const gy = Math.floor((this.#cursor.y - 40) / TILE_SIZE);
-          this.#grid[gy][gx] = (!this.#grid[gy][gx]&1);
-        }
-      }
-      // Submit
-      if (KeyHandler.isDown(13)) {
-        if (this.#cursor.timer >= this.#cursor.delay) {
-          this.#cursor.timer = 0;
+      // Submit the puzzle
+      if (KeyHandler.isDown(81)) {
+        if (this.#submit_timer >= this.#submit_delay) {
+          this.#submit_timer = 0;
           this.#btn_submit.callback();
         }
       }
@@ -191,28 +179,11 @@ export default class CreateState extends State {
 
       if (this.#highlight === 0) {
         this.#keyboard.draw();
-
-        [...this.#keyboard.string].forEach((c, i) => {
-          const sx = c.charCodeAt(0) - 'a'.charCodeAt(0);
-
-          Renderer.image(
-            "spritesheet",
-            sx * TILE_SIZE, 240, TILE_SIZE, TILE_SIZE,
-            100 + (i*TILE_SIZE), 20, TILE_SIZE, TILE_SIZE
-          )
-        });
+        Renderer.imageText(this.#keyboard.string, 100, 20);
       }
       else {
         this.#keyboardNum.draw();
-        [...this.#keyboardNum.string].forEach((c, i) => {
-          const sx = c.charCodeAt(0) - '0'.charCodeAt(0);
-
-          Renderer.image(
-            "spritesheet",
-            sx * TILE_SIZE, 248, TILE_SIZE, TILE_SIZE,
-            100 + (i*TILE_SIZE), 20, TILE_SIZE, TILE_SIZE
-          )
-        });
+        Renderer.imageText(this.#keyboardNum.string, 100, 20);
       }
     }
     else if (this.#state === 1) {
