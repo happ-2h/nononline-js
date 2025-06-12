@@ -14,7 +14,7 @@ export default class WinState extends State {
   constructor(pixels) {
     super();
 
-    this.#label_complete = new Label(100, 32, "puzzle completed");
+    this.#label_complete = new Label("puzzle completed", 100, 32);
     this.#btn_playAgain = new Button(100, 140, 10, 2, "play again", 0, 1);
     this.#btn_playAgain.callback = () => {
       StateHandler.pop();
@@ -28,9 +28,8 @@ export default class WinState extends State {
   init() {}
 
   update(dt) {
-    if (KeyHandler.isDown(13)) {
+    if (KeyHandler.isDown(13))
       this.#btn_playAgain.callback();
-    }
   }
 
   render() {
