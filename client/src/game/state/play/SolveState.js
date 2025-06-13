@@ -1,7 +1,8 @@
+import Entity_BasicCursor from "../../../entity/Entity_BasicCursor";
 import Renderer from "../../../gfx/Renderer";
 import Cursor from "../../../gfx/ui/Cursor";
 import KeyHandler from "../../../input/KeyHandler";
-import { TILE_SIZE } from "../../constants";
+import { SCREEN_WIDTH, TILE_SIZE } from "../../constants";
 import State from "../State";
 import StateHandler from "../StateHandler";
 import WinState from "./WinState";
@@ -14,6 +15,8 @@ export default class SolveState extends State {
   #nums_rows;
 
   #cursor;
+  #cursor_col;
+  #cursor_row;
 
   constructor(puzzle) {
     super();
@@ -91,11 +94,17 @@ export default class SolveState extends State {
     this.#nums_rows.forEach(arr => arr.reverse());
 
     this.#cursor = new Cursor(
-      50 - 8, 50,
-      50 - 8, 50 + 8 * (this.#board[0].length-2),
-      50, 50 + 8 * (this.#board.length - 1),
-      8, 0.3, false
+      (SCREEN_WIDTH / 2 - ((this.#puzzle.width / 2) * 8)) + 8,
+      48,
+      (SCREEN_WIDTH / 2 - ((this.#puzzle.width / 2) * 8)) + 8,
+      (SCREEN_WIDTH / 2 - ((this.#puzzle.width / 2) * 8)) + 8 * (this.#board[0].length),
+      48,
+      48 + 8 * (this.#board.length - 1),
+      8, 0.3, false, true
     );
+
+    this.#cursor_col = new Entity_BasicCursor((SCREEN_WIDTH / 2 - ((this.#puzzle.width / 2) * 8)), 48 - 8, 16, 208);
+    this.#cursor_row = new Entity_BasicCursor((SCREEN_WIDTH / 2 - ((this.#puzzle.width / 2) * 8)) - 8, 48, 24, 208);
   }
 
   onEnter() {}
@@ -105,9 +114,11 @@ export default class SolveState extends State {
 
   update(dt) {
     this.#cursor.update(dt);
+    this.#cursor_col.x = this.#cursor.x - TILE_SIZE;
+    this.#cursor_row.y = this.#cursor.y;
 
-    const cursorx = ((this.#cursor.x - 50) / 8) + 1;
-    const cursory = (this.#cursor.y - 50) / 8;
+    const cursorx = ((this.#cursor.x - (SCREEN_WIDTH / 2 - ((this.#puzzle.width / 2) * 8))) / 8) - 1;
+    const cursory = (this.#cursor.y - 48) / 8;
 
     // Markers
     // - Set
@@ -149,8 +160,8 @@ export default class SolveState extends State {
           Renderer.image(
             "spritesheet",
             num * TILE_SIZE, 200, TILE_SIZE, TILE_SIZE,
-            50 + x * TILE_SIZE,
-            50 + y * TILE_SIZE,
+            (SCREEN_WIDTH / 2 - ((this.#puzzle.width / 2) * 8)) + x * TILE_SIZE,
+            48 + y * TILE_SIZE,
             TILE_SIZE, TILE_SIZE
           )
         }
@@ -163,8 +174,8 @@ export default class SolveState extends State {
         Renderer.image(
           "spritesheet",
           0, 192, TILE_SIZE, TILE_SIZE,
-          50 + x * TILE_SIZE,
-          50 + y * TILE_SIZE,
+          (SCREEN_WIDTH / 2 - ((this.#puzzle.width / 2) * 8)) + x * TILE_SIZE,
+          48 + y * TILE_SIZE,
           TILE_SIZE, TILE_SIZE
         );
       }
@@ -175,7 +186,7 @@ export default class SolveState extends State {
     for (let y = 0; y < this.#nums_cols.length; ++y) {
       // 0
       if (this.#nums_cols[y].length === 0)
-        Renderer.imageText("0", 50 + y * 8, 50 - 8);
+        Renderer.imageText("0", (SCREEN_WIDTH / 2 - ((this.#puzzle.width / 2) * 8)) + y * 8, 48 - 12);
 
       for (let x = 0; x < this.#nums_cols[y].length; ++x) {
         let n = this.#nums_cols[y][x];
@@ -185,28 +196,28 @@ export default class SolveState extends State {
           Renderer.image(
             "spritesheet",
             84, 248, 4, 4,
-            50 + (y * 8),
-            50  - 8 - x * 8,
+            (SCREEN_WIDTH / 2 - ((this.#puzzle.width / 2) * 8)) + (y * 8),
+            48 - 12 - x * 8,
             4, 8
           );
           // One's place
           Renderer.image(
             "spritesheet",
             80 + (n%10) * 4, 248, 4, 4,
-            50 + (y * 8) + 4,
-            50 - 8 - x * 8,
+            (SCREEN_WIDTH / 2 - ((this.#puzzle.width / 2) * 8)) + (y * 8) + 4,
+            48 - 12 - x * 8,
             4, 8
           );
         }
         else
-          Renderer.imageText(n, 50 + y * 8, 50 - 8 - x * 8);
+          Renderer.imageText(n, (SCREEN_WIDTH / 2 - ((this.#puzzle.width / 2) * 8)) + y * 8, 48 - 12 - x * 8);
       }
     }
     // - Rows
     for (let y = 0; y < this.#nums_rows.length; ++y) {
       // 0
       if (this.#nums_rows[y].length === 0)
-        Renderer.imageText("0", 50-8, 50 + y * 8);
+        Renderer.imageText("0", (SCREEN_WIDTH / 2 - ((this.#puzzle.width / 2) * 8))-12, 48 + y * 8);
 
       for (let x = 0; x < this.#nums_rows[y].length; ++x) {
         let n = this.#nums_rows[y][x];
@@ -216,32 +227,37 @@ export default class SolveState extends State {
           Renderer.image(
             "spritesheet",
             84, 248, 4, 4,
-            50 - 8 - (x * 8),
-            50 + y * 8,
+            (SCREEN_WIDTH / 2 - ((this.#puzzle.width / 2) * 8)) - 12 - (x * 8),
+            48 + y * 8,
             4, 8
           );
           // One's place
           Renderer.image(
             "spritesheet",
             80 + (n%10) * 4, 248, 4, 4,
-            50 - 4 - (x * 8),
-            50 + y * 8,
+            (SCREEN_WIDTH / 2 - ((this.#puzzle.width / 2) * 8)) - 8 - (x * 8),
+            48 + y * 8,
             4, 8
           );
         }
         else
-          Renderer.imageText(n, 50 - 8 - (x * 8), 50 + y * 8);
+          Renderer.imageText(n, (SCREEN_WIDTH / 2 - ((this.#puzzle.width / 2) * 8)) - 12 - (x * 8), 48 + y * 8);
       }
     }
 
     this.#cursor.draw();
+
+    this.#cursor_col.draw();
+    this.#cursor_row.draw();
   }
 
   #didWin() {
     for (let y = 0; y < this.#board.length; ++y) {
       for (let x = 0; x < this.#board[0].length; ++x) {
-        if (this.#board_sol[y][x] === 1 && this.#board[y][x] !== 1)
-          return false;
+        if (
+          this.#board_sol[y][x] === 1 && this.#board[y][x] !== 1 ||
+          this.#board_sol[y][x] === 0 && this.#board[y][x] === 1
+        ) return false;
       }
     }
 

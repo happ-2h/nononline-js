@@ -24,10 +24,10 @@ export default class Cursor {
 
   #selected;
 
-  constructor(x=0, y=0, xMin=0, xMax=0, yMin=0, yMax=0, step=8, delay=0.3, animate=true) {
+  constructor(x=0, y=0, xMin=0, xMax=0, yMin=0, yMax=0, step=8, delay=0.3, animate=true, flip=false) {
     this.#x = x;
     this.#y = y;
-    this.#sx = 0;
+    this.#sx = flip ? 32 : 0;
     this.#sy = 208;
 
     this.#xMin = xMin;
