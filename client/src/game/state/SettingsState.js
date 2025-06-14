@@ -1,9 +1,10 @@
-import Cursor from "../../gfx/ui/Cursor";
-import Label from "../../gfx/ui/Label";
-import { TILE_SIZE } from "../constants";
-import settings from "../settings";
-import State from "./State";
+import Cursor       from "../../gfx/ui/Cursor";
+import Label        from "../../gfx/ui/Label";
+import State        from "./State";
 import StateHandler from "./StateHandler";
+
+import settings from "../settings";
+import { TILE_SIZE } from "../constants";
 
 export default class SettingsState extends State {
   #cursor;

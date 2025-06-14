@@ -1,6 +1,7 @@
-import { TILE_SIZE } from "../game/constants";
 import Renderer from "../gfx/Renderer";
-import Entity from "./Entity";
+import Entity   from "./Entity";
+
+import { TILE_SIZE } from "../game/constants";
 
 export default class Entity_BasicCursor extends Entity {
   #sx;
@@ -20,8 +21,10 @@ export default class Entity_BasicCursor extends Entity {
   draw() {
     Renderer.image(
       "spritesheet",
-      this.#sx, this.#sy, TILE_SIZE, TILE_SIZE,
-      this.x, this.y, TILE_SIZE, TILE_SIZE
+      this.#sx, this.#sy,
+      TILE_SIZE, TILE_SIZE,
+      this.x, this.y,
+      TILE_SIZE, TILE_SIZE
     );
   }
 };

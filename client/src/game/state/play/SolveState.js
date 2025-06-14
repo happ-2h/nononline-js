@@ -1,11 +1,12 @@
+import Cursor             from "../../../gfx/ui/Cursor";
 import Entity_BasicCursor from "../../../entity/Entity_BasicCursor";
-import Renderer from "../../../gfx/Renderer";
-import Cursor from "../../../gfx/ui/Cursor";
-import KeyHandler from "../../../input/KeyHandler";
+import KeyHandler         from "../../../input/KeyHandler";
+import Renderer           from "../../../gfx/Renderer";
+import State              from "../State";
+import StateHandler       from "../StateHandler";
+import WinState           from "./WinState";
+
 import { SCREEN_WIDTH, TILE_SIZE } from "../../constants";
-import State from "../State";
-import StateHandler from "../StateHandler";
-import WinState from "./WinState";
 
 export default class SolveState extends State {
   #puzzle;
@@ -103,12 +104,20 @@ export default class SolveState extends State {
       8, 0.3, false, true
     );
 
-    this.#cursor_col = new Entity_BasicCursor((SCREEN_WIDTH / 2 - ((this.#puzzle.width / 2) * 8)), 48 - 8, 16, 208);
-    this.#cursor_row = new Entity_BasicCursor((SCREEN_WIDTH / 2 - ((this.#puzzle.width / 2) * 8)) - 8, 48, 24, 208);
+    this.#cursor_col = new Entity_BasicCursor(
+      (SCREEN_WIDTH / 2 - ((this.#puzzle.width / 2) * 8)),
+      48 - 8,
+      16, 208
+    );
+    this.#cursor_row = new Entity_BasicCursor(
+      (SCREEN_WIDTH / 2 - ((this.#puzzle.width / 2) * 8)) - 8,
+      48,
+      24, 208
+    );
   }
 
   onEnter() {}
-  onExit() {}
+  onExit()  {}
 
   init() {}
 

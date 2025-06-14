@@ -1,13 +1,14 @@
-import Renderer from "../../gfx/Renderer";
-import Button from "../../gfx/ui/Button";
-import Cursor from "../../gfx/ui/Cursor";
-import Keyboard from "../../gfx/ui/Keyboard";
-import Label from "../../gfx/ui/Label";
-import KeyHandler from "../../input/KeyHandler";
-import Network from "../../network/Network";
-import { TILE_SIZE } from "../constants";
-import State from "./State";
+import Button       from "../../gfx/ui/Button";
+import Cursor       from "../../gfx/ui/Cursor";
+import Keyboard     from "../../gfx/ui/Keyboard";
+import KeyHandler   from "../../input/KeyHandler";
+import Label        from "../../gfx/ui/Label";
+import Network      from "../../network/Network";
+import Renderer     from "../../gfx/Renderer";
+import State        from "./State";
 import StateHandler from "./StateHandler";
+
+import { TILE_SIZE } from "../constants";
 
 export default class CreateState extends State {
   #label_title;
@@ -29,22 +30,23 @@ export default class CreateState extends State {
   constructor() {
     super();
 
-    this.#highlight = 0;
-    this.#state = 0;
     this.#label_title  = new Label("title", 10, 10);
     this.#label_width  = new Label("width", 10, 18);
     this.#label_height = new Label("height", 10, 26);
     this.#btn_submit   = new Button(10, 34, 6, 2, "submit");
-    this.#keyboard = new Keyboard(100, 100);
-    this.#keyboardNum = new Keyboard(100, 100, "number");
+    this.#keyboard     = new Keyboard(100, 100);
+    this.#keyboardNum  = new Keyboard(100, 100, "number");
+
+    this.#state     = 0;
+    this.#highlight = 0;
+    this.#grid      = null;
+    this.#cursor    = null;
     this.#file = {
-      title: "",
-      width: 0,
+      title:  "",
+      width:  0,
       height: 0,
       puzzle: []
     };
-    this.#grid = null;
-    this.#cursor = null;
 
     // Final puzzle submission to database
     this.#submit_timer = 0;
@@ -52,7 +54,7 @@ export default class CreateState extends State {
   }
 
   onEnter() {}
-  onExit() {}
+  onExit()  {}
 
   init() {}
 
@@ -131,7 +133,6 @@ export default class CreateState extends State {
           };
           this.#grid = new Array(this.#file.height)
             .fill(0).map(() => new Array(this.#file.width).fill(0));
-          console.log(100 + 8 * (this.#grid[0].length - 1));
           this.#cursor = new Cursor(
             100 - 8, 40,
             100 - 8, 100 + 8 * (this.#grid[0].length-2),
@@ -150,7 +151,7 @@ export default class CreateState extends State {
       // Set tile
       if (this.#cursor.selected) {
         const gx = Math.floor((this.#cursor.x - 100 + 8) / TILE_SIZE);
-        const gy = Math.floor((this.#cursor.y - 40) / TILE_SIZE);
+        const gy = Math.floor((this.#cursor.y - 40)      / TILE_SIZE);
         this.#grid[gy][gx] = (!this.#grid[gy][gx]&1);
       }
 

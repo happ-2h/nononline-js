@@ -1,8 +1,9 @@
-import { TILE_SIZE } from "../../game/constants";
+import Cursor     from "./Cursor";
 import KeyHandler from "../../input/KeyHandler";
-import { clamp } from "../../math/utils";
-import Renderer from "../Renderer";
-import Cursor from "./Cursor";
+import Renderer   from "../Renderer";
+
+import { TILE_SIZE } from "../../game/constants";
+import { clamp }     from "../../math/utils";
 
 export default class Keyboard {
   #x;
@@ -37,15 +38,15 @@ export default class Keyboard {
       ];
     }
 
-    this.#cursor = new Cursor(x, y);
-    this.#string = "";
+    this.#cursor    = new Cursor(x, y);
+    this.#string    = "";
     this.#submitted = false;
   }
 
   init() {
-    this.#cursor.x = this.#x;
-    this.#cursor.y = this.#y;
-    this.#string = "";
+    this.#cursor.x  = this.#x;
+    this.#cursor.y  = this.#y;
+    this.#string    = "";
     this.#submitted = false;
   }
 
@@ -83,16 +84,15 @@ export default class Keyboard {
       if (this.#cursor.timer >= this.#cursor.delay) {
         this.#cursor.timer = 0;
 
-        const cx = (this.#cursor.x - this.#x) / 16;
-        const cy = (this.#cursor.y - this.#y) / 16;
+        const cx   = (this.#cursor.x - this.#x) / 16;
+        const cy   = (this.#cursor.y - this.#y) / 16;
         const char = this.#layout[cy][cx];
 
         if (
           ((char >= 'a' && char <= 'z')  ||
            (char >= '0' && char <= '9')) &&
           this.#string.length < 10
-        )
-          this.#string += this.#layout[cy][cx];
+        ) this.#string += this.#layout[cy][cx];
         else if (char === '<')
           this.#string = this.#string.slice(0, -1);
         else if (char === '@')
@@ -119,8 +119,8 @@ export default class Keyboard {
         }
 
         // Key
-        const cx = (this.#cursor.x - this.#x) / 16;
-        const cy = (this.#cursor.y - this.#y) / 16;
+        const cx    = (this.#cursor.x - this.#x) / 16;
+        const cy    = (this.#cursor.y - this.#y) / 16;
         const cchar = this.#layout[cy][cx];
 
         Renderer.image(

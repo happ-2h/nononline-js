@@ -1,6 +1,6 @@
-import Renderer from "../../gfx/Renderer";
 import Keyboard from "../../gfx/ui/Keyboard";
-import State from "./State";
+import Renderer from "../../gfx/Renderer";
+import State    from "./State";
 
 export default class TestState extends State {
   #keyboard;

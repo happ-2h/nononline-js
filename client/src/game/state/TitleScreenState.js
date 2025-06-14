@@ -1,11 +1,12 @@
-import Button from "../../gfx/ui/Button";
-import Cursor from "../../gfx/ui/Cursor";
-import { TILE_SIZE } from "../constants";
-import CreateState from "./CreateState";
-import PlayState from "./play/PlayState";
+import Button        from "../../gfx/ui/Button";
+import CreateState   from "./CreateState";
+import Cursor        from "../../gfx/ui/Cursor";
+import PlayState     from "./play/PlayState";
 import SettingsState from "./SettingsState";
-import State from "./State";
-import StateHandler from "./StateHandler";
+import State         from "./State";
+import StateHandler  from "./StateHandler";
+
+import { TILE_SIZE } from "../constants";
 
 export default class TitleScreenState extends State {
   #btn_play;

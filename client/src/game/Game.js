@@ -1,9 +1,10 @@
-import Renderer from "../gfx/Renderer";
-import Network from "../network/Network";
-import AssetHandler from "../utils/AssetHandler";
-import { WINDOW_HEIGHT, WINDOW_WIDTH } from "./constants";
-import StateHandler from "./state/StateHandler";
+import AssetHandler     from "../utils/AssetHandler";
+import Network          from "../network/Network";
+import Renderer         from "../gfx/Renderer";
+import StateHandler     from "./state/StateHandler";
 import TitleScreenState from "./state/TitleScreenState";
+
+import { WINDOW_HEIGHT, WINDOW_WIDTH } from "./constants";
 
 export default class Game {
   #cnv;  // HTML canvas reference
@@ -49,7 +50,5 @@ export default class Game {
     Renderer.clear(this.#cnv.width, this.#cnv.height);
 
     StateHandler.render();
-
-    Renderer.text(1/dt, 32, 32);
   }
 };

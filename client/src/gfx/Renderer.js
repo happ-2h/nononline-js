@@ -1,5 +1,11 @@
-import { GAME_SCALE, RES_HEIGHT, RES_WIDTH, SCREEN_HEIGHT, SCREEN_WIDTH, TILE_SIZE } from "../game/constants";
 import TextureHandler from "./TextureHandler";
+
+import {
+  GAME_SCALE,
+  SCREEN_HEIGHT,
+  SCREEN_WIDTH,
+  TILE_SIZE
+} from "../game/constants";
 
 let instance = null;
 
@@ -48,7 +54,7 @@ class _Renderer {
     text = text?.toString()?.toLowerCase();
 
     text.split('').forEach((c, cx) => {
-      let n = c.charCodeAt(0);
+      let n  = c.charCodeAt(0);
       let sy = 240;
 
       if (c >= 'a' && c <= 'z') n -=  97;
@@ -92,7 +98,7 @@ class _Renderer {
   }
 
   drawGrid() {
-    const w = SCREEN_WIDTH / TILE_SIZE;
+    const w = SCREEN_WIDTH  / TILE_SIZE;
     const h = SCREEN_HEIGHT / TILE_SIZE;
 
     for (let x = 0; x < w; ++x) {
@@ -100,7 +106,7 @@ class _Renderer {
         this.#ctx.strokeStyle = "black";
         this.#ctx.strokeRect(
           x * TILE_SIZE * GAME_SCALE,
-          y*TILE_SIZE*GAME_SCALE,
+          y * TILE_SIZE * GAME_SCALE,
           TILE_SIZE * GAME_SCALE,
           TILE_SIZE * GAME_SCALE
         );

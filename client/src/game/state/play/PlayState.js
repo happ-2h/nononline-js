@@ -1,8 +1,8 @@
-import Cursor from "../../../gfx/ui/Cursor";
-import Label from "../../../gfx/ui/Label";
-import State from "../State";
-import StateHandler from "../StateHandler";
+import Cursor            from "../../../gfx/ui/Cursor";
+import Label             from "../../../gfx/ui/Label";
 import SelectPuzzleState from "./SelectPuzzleState";
+import State             from "../State";
+import StateHandler      from "../StateHandler";
 
 export default class PlayState extends State {
   #label_top10;
@@ -53,7 +53,7 @@ export default class PlayState extends State {
   }
 
   onEnter() {}
-  onExit() {}
+  onExit()  {}
 
   init() {}
 

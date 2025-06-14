@@ -1,7 +1,8 @@
-import { TILE_SIZE } from "../../game/constants";
 import KeyHandler from "../../input/KeyHandler";
-import { clamp } from "../../math/utils";
-import Renderer from "../Renderer";
+import Renderer   from "../Renderer";
+
+import { clamp }     from "../../math/utils";
+import { TILE_SIZE } from "../../game/constants";
 
 export default class Cursor {
   #x;
@@ -24,9 +25,15 @@ export default class Cursor {
 
   #selected;
 
-  constructor(x=0, y=0, xMin=0, xMax=0, yMin=0, yMax=0, step=8, delay=0.3, animate=true, flip=false) {
-    this.#x = x;
-    this.#y = y;
+  constructor(
+    x=0, y=0,
+    xMin=0, xMax=0,
+    yMin=0, yMax=0,
+    step=8, delay=0.3,
+    animate=true, flip=false
+  ) {
+    this.#x  = x;
+    this.#y  = y;
     this.#sx = flip ? 32 : 0;
     this.#sy = 208;
 
@@ -35,12 +42,12 @@ export default class Cursor {
     this.#yMin = yMin;
     this.#yMax = yMax;
 
-    this.#delay = delay;
-    this.#timer = 0;
-    this.#step = step;
-    this.#initialX = x;
+    this.#delay   = delay;
+    this.#timer   = 0;
+    this.#step    = step;
     this.#animate = animate;
 
+    this.#initialX = x;
     this.#selected = false;
   }
 
@@ -92,14 +99,14 @@ export default class Cursor {
     )
   }
 
-  get x() { return this.#x; }
-  get y() { return this.#y; }
-  get delay() { return this.#delay; }
-  get timer() { return this.#timer; }
+  get x()        { return this.#x; }
+  get y()        { return this.#y; }
+  get delay()    { return this.#delay; }
+  get timer()    { return this.#timer; }
   get selected() { return this.#selected; }
 
-  set x(_x) { this.#x = _x; }
-  set y(_y) { this.#y = _y; }
+  set x(_x)    { this.#x = _x; }
+  set y(_y)    { this.#y = _y; }
   set delay(d) { this.#delay = d; }
   set timer(t) { this.#timer = t; }
 };

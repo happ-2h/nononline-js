@@ -1,8 +1,8 @@
-import Cursor from "../../../gfx/ui/Cursor";
-import Label from "../../../gfx/ui/Label";
-import State from "../State";
+import Cursor       from "../../../gfx/ui/Cursor";
+import Label        from "../../../gfx/ui/Label";
+import SolveState   from "./SolveState";
+import State        from "../State";
 import StateHandler from "../StateHandler";
-import SolveState from "./SolveState";
 
 export default class SelectPuzzleState extends State {
   #puzzleData;
@@ -21,7 +21,7 @@ export default class SelectPuzzleState extends State {
   }
 
   onEnter() {}
-  onExit() {}
+  onExit()  {}
 
   init() {}
 
