@@ -3,7 +3,7 @@ import { DatabaseSync } from "node:sqlite";
 const database = new DatabaseSync(`${import.meta.dirname}/nononline.db`);
 
 /*
-  MAYBE rating db and date created
+  MAYBE rating and date created
  */
 const initDB = `
 CREATE TABLE IF NOT EXISTS puzzles (

@@ -1,7 +1,8 @@
 import express from "express";
-import cors from "cors";
-import helmet from "helmet"
+import cors    from "cors";
+import helmet  from "helmet"
 import 'dotenv/config';
+
 import puzzlesRouter from "./routes/puzzles.routes.js";
 
 const app = express();

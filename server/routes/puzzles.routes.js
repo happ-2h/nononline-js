@@ -1,6 +1,11 @@
 import express from "express";
 
-import { createPuzzle, getPuzzle, getPuzzles, getRandomPuzzle } from "../database/queries.js";
+import {
+  createPuzzle,
+  getPuzzle,
+  getPuzzles,
+  getRandomPuzzle
+} from "../database/queries.js";
 
 const puzzlesRouter = express.Router();
 
@@ -10,8 +15,8 @@ puzzlesRouter.post('/', (req, res) => {
 
   // Input validation
   // - Convert input
-  const cnvTitle = title?.toString()?.trim()?.toLowerCase();
-  const cnvWidth = parseInt(width);
+  const cnvTitle  = title?.toString()?.trim()?.toLowerCase();
+  const cnvWidth  = parseInt(width);
   const cnvHeight = parseInt(height);
 
   if (
@@ -22,31 +27,31 @@ puzzlesRouter.post('/', (req, res) => {
   ) {
     return res.status(400).json({
       status: 400,
-      error: "Title must only be letters and be between 1 and 10 characters"
+      error:  "Title must only be letters and be between 1 and 10 characters"
     });
   }
 
   if (
-    !cnvWidth ||
+    !cnvWidth       ||
     isNaN(cnvWidth) ||
-    cnvWidth < 2 ||
+    cnvWidth < 2    ||
     cnvWidth > 16
   ) {
     return res.status(400).json({
       status: 400,
-      error: "Width must be between 2 and 16"
+      error:  "Width must be between 2 and 16"
     });
   }
 
   if (
-    !cnvHeight ||
+    !cnvHeight       ||
     isNaN(cnvHeight) ||
-    cnvHeight < 2 ||
+    cnvHeight < 2    ||
     cnvHeight > 16
   ) {
     return res.status(400).json({
       status: 400,
-      error: "Height must be between 2 and 16"
+      error:  "Height must be between 2 and 16"
     });
   }
 
@@ -56,7 +61,7 @@ puzzlesRouter.post('/', (req, res) => {
   ) {
     return res.status(400).json({
       status: 400,
-      error: "Incorrect puzzle data"
+      error:  "Incorrect puzzle data"
     });
   }
 
@@ -69,10 +74,10 @@ puzzlesRouter.post('/', (req, res) => {
   );
 
   res.status(201).json({
-    status: 201,
-    message: "Puzzle added",
+    status:    201,
+    message:   "Puzzle added",
     puzzle_id: newPuzzle.puzzle_id,
-    title: newPuzzle.title
+    title:     newPuzzle.title
   });
 });
 
@@ -83,49 +88,43 @@ puzzlesRouter.get('/', (req, res) => {
   if (count === undefined) {
     return res.status(400).json({
       status: 400,
-      error: "count=<number> query is required"
+      error:  "count=<number> query is required"
     });
   }
 
   // Input validation
   // - Convert input
-  const cnvSkip  = parseInt(skip || 0);
-  const cnvCount = parseInt(count);
+  const cnvSkip   = parseInt(skip || 0);
+  const cnvCount  = parseInt(count);
   const cnvRandom = parseInt(random || 0);
 
   if (isNaN(cnvSkip)) {
     return res.status(400).json({
       status: 400,
-      error: "\'skip\' query must be an integer"
+      error:  "\'skip\' query must be an integer"
     });
   }
 
   if (isNaN(cnvCount)) {
     return res.status(400).json({
       status: 400,
-      error: "\'count\' query must be an integer"
+      error:  "\'count\' query must be an integer"
     });
   }
 
   if (isNaN(cnvRandom)) {
     return res.status(400).json({
       status: 400,
-      error: "\'random\' query must be 0 or 1"
+      error:  "\'random\' query must be 0 or 1"
     });
   }
 
   // Input passed validation
-  let puzzles = null;
-  if (cnvRandom === 1) {
-    puzzles = getRandomPuzzle.get();
-  }
-  else {
-    puzzles = getPuzzles.all(cnvSkip, cnvCount);
-  }
-
   res.status(200).json({
     status: 200,
-    data: puzzles
+    data: cnvRandom === 1 ?
+          getRandomPuzzle.get() :
+          getPuzzles.all(cnvSkip, cnvCount)
   });
 });
 
@@ -145,6 +144,7 @@ puzzlesRouter.get('/puzzle/:id', (req, res) => {
     });
   }
 
+  // Input passed validation
   const puzzle = getPuzzle.get(cnvId);
 
   res.status(200).json({
