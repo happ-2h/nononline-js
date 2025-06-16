@@ -6,6 +6,7 @@ import {
   SCREEN_WIDTH,
   TILE_SIZE
 } from "../game/constants";
+import settings from "../game/settings";
 
 let instance = null;
 
@@ -55,7 +56,7 @@ class _Renderer {
 
     text.split('').forEach((c, cx) => {
       let n  = c.charCodeAt(0);
-      let sy = 240;
+      let sy = 0;
 
       if (c >= 'a' && c <= 'z') n -=  97;
       else if (c >= '0' && c <= '9') {
@@ -63,7 +64,7 @@ class _Renderer {
         sy += 8;
       }
       this.image(
-        "spritesheet",
+        `${settings.theme}_font`,
         n * TILE_SIZE, sy,
         TILE_SIZE, TILE_SIZE,
         x + cx * TILE_SIZE, y,

@@ -36,12 +36,18 @@ class _StateHandler {
     this.#states[this.#states.length-1]?.render();
   }
 
+
+
   clear() {
     this.#states = [];
   }
 
   length() {
     return this.#states.length;
+  }
+
+  get previous() {
+    return this.#states[this.#states.length-2];
   }
 };
 

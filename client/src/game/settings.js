@@ -1,5 +1,6 @@
 const settings = {
-  fullscreen: false
+  fullscreen: false,
+  theme: "catppuccin"
 };
 
 export default settings;
