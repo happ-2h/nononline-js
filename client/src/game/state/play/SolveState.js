@@ -14,6 +14,7 @@ export default class SolveState extends State {
   #board_sol;
   #nums_cols;
   #nums_rows;
+  #lives;
 
   #cursor;
   #cursor_col;
@@ -21,6 +22,7 @@ export default class SolveState extends State {
 
   constructor(puzzle) {
     super();
+
     this.#puzzle = puzzle;
     this.#board =
       new Array(puzzle.height).fill(0)
@@ -39,6 +41,7 @@ export default class SolveState extends State {
 
     this.#nums_cols = new Array(puzzle.width);
     this.#nums_rows = new Array(puzzle.height);
+    this.#lives = 6;
 
     // Count column bits
     for (let x = 0; x < puzzle.width; ++x) {
@@ -114,6 +117,8 @@ export default class SolveState extends State {
       48,
       24, 208
     );
+
+    console.log(this.#board_sol);
   }
 
   onEnter() {}
@@ -136,6 +141,8 @@ export default class SolveState extends State {
         this.#cursor.timer = 0;
 
         this.#board[cursory][cursorx] = this.#board[cursory][cursorx] !== 1 ? 1 : 0;
+
+        this.#checkWrong(cursorx, cursory);
 
         if (this.#didWin()) {
           StateHandler.pop();
@@ -258,6 +265,16 @@ export default class SolveState extends State {
 
     this.#cursor_col.draw();
     this.#cursor_row.draw();
+  }
+
+  #checkWrong(x=-1, y=-1) {
+    if (x < 0 || y < 0) return;
+
+    if (this.#board_sol[y][x] !== 1) {
+      this.#board[y][x] = 0;
+      // TEMP
+      if (--this.#lives <= 0) console.log("game over");
+    }
   }
 
   #didWin() {
