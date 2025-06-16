@@ -1,46 +1,63 @@
-import Button        from "../../gfx/ui/Button";
 import CreateState   from "./CreateState";
-import Cursor        from "../../gfx/ui/Cursor";
+import Icon          from "../../gfx/ui/Icon";
+import KeyHandler    from "../../input/KeyHandler";
+import Label         from "../../gfx/ui/Label";
 import PlayState     from "./play/PlayState";
+import Renderer      from "../../gfx/Renderer";
+import settings      from "../settings";
 import SettingsState from "./SettingsState";
+import Shortcut      from "../../gfx/ui/Shortcut";
 import State         from "./State";
 import StateHandler  from "./StateHandler";
 
-import { TILE_SIZE } from "../constants";
+import {
+  BANNER_HEIGHT,
+  BANNER_WIDTH,
+  SCREEN_WIDTH,
+} from "../constants";
 
 export default class TitleScreenState extends State {
-  #btn_play;
-  #btn_create;
-  #btn_settings;
+  #shortcuts;
 
-  #cursor;
+  #inputTimer;
+  #inputDelay;
 
   constructor() {
     super();
 
-    this.#btn_play = new Button(120, 24, 8, 3, "Play", 16, 5);
-    this.#btn_play.callback = () => {
-      this.#cursor.timer = 0;
-      StateHandler.push(new PlayState);
-     }
-    this.#btn_create = new Button(120, 40 + 8*3, 8, 3, "create", 7, 5);
-    this.#btn_create.callback = () => {
-      this.#cursor.timer = 0;
-      StateHandler.push(new CreateState);
-    }
-    this.#btn_settings = new Button(120, 40 + 8 * 8, 8, 3, "settings", 0, 5);
-    this.#btn_settings.callback = () => {
-      this.#cursor.timer = 0;
-      StateHandler.push(new SettingsState);
-    }
+    this.#shortcuts = [
+      new Shortcut(
+        SCREEN_WIDTH / 4 + 8,
+        80,
+        17,
+        new Icon(0, 0, 8, 0),
+        new Label("play", 0, 0),
+        'p',
+        () => StateHandler.push(new PlayState)
 
-    this.#cursor = new Cursor(
-      120 - TILE_SIZE,
-      24 + 14,
-      120-TILE_SIZE, 120-TILE_SIZE,
-      24 + 14, (40 + 8 * 8) + 14,
-      40, 0.3, true
-    );
+      ),
+      new Shortcut(
+        SCREEN_WIDTH / 4 + 8,
+        96,
+        17,
+        new Icon(0, 0, 16, 0),
+        new Label("create", 0, 0),
+        'c',
+        () => StateHandler.push(new CreateState)
+      ),
+      new Shortcut(
+        SCREEN_WIDTH / 4 + 8,
+        112,
+        17,
+        new Icon(0, 0, 24, 0),
+        new Label("settings", 0, 0),
+        's',
+        () => StateHandler.push(new SettingsState)
+      )
+    ];
+
+    this.#inputTimer = 0;
+    this.#inputDelay = 0.3;
   }
 
   onEnter() {}
@@ -49,22 +66,33 @@ export default class TitleScreenState extends State {
   init() {}
 
   update(dt) {
-    this.#cursor.update(dt);
+    this.#inputTimer += dt;
 
-    if (this.#cursor.selected) {
-      if (this.#cursor.y <= this.#btn_play.y + this.#btn_play.height*8)
-        this.#btn_play.callback();
-      else if (this.#cursor.y <= this.#btn_create.y + this.#btn_create.height*8)
-        this.#btn_create.callback();
-      else if (this.#cursor.y <= this.#btn_settings.y + this.#btn_settings.height*8)
-        this.#btn_settings.callback();
+    if (this.#inputTimer >= this.#inputDelay) {
+      if (KeyHandler.isDown(80)) {
+        this.#inputTimer = 0;
+        this.#shortcuts[0].callback();
+      }
+      else if (KeyHandler.isDown(67)) {
+        this.#inputTimer = 0;
+        this.#shortcuts[1].callback();
+      }
+      else if (KeyHandler.isDown(83)) {
+        this.#inputTimer = 0;
+        this.#shortcuts[2].callback();
+      }
     }
   }
 
   render() {
-    this.#btn_play.draw();
-    this.#btn_create.draw();
-    this.#btn_settings.draw();
-    this.#cursor.draw();
+    this.#shortcuts.forEach(shortcut => shortcut.draw());
+
+    Renderer.image(
+      `${settings.theme}_banner`,
+      0,0,
+      BANNER_WIDTH, BANNER_HEIGHT,
+      0,0,
+      BANNER_WIDTH, BANNER_HEIGHT
+    );
   }
 };
