@@ -1,21 +1,51 @@
-import Cursor            from "../../../gfx/ui/Cursor";
 import Label             from "../../../gfx/ui/Label";
-import SelectPuzzleState from "./SelectPuzzleState";
 import State             from "../State";
 import StateHandler      from "../StateHandler";
+import Shortcut from "../../../gfx/ui/Shortcut";
+import Icon from "../../../gfx/ui/Icon";
+import KeyHandler from "../../../input/KeyHandler";
+import { SCREEN_HEIGHT, TILE_SIZE } from "../../constants";
+import Renderer from "../../../gfx/Renderer";
+import settings from "../../settings";
 
 export default class PlayState extends State {
-  #label_top10;
-  #label_random;
-  #label_recent;
-  #label_search;
+  #shortcuts;
 
-  #cursor;
+  #inputTimer;
+  #inputDelay;
+
 
   constructor() {
     super();
 
-    this.#label_top10 = new Label("top 10", 90, 0);
+    this.#inputTimer = 0;
+    this.#inputDelay = 0.3;
+
+    this.#shortcuts = [
+      new Shortcut(
+        8, 8, 14,
+        new Icon(0, 0, 48, 0),
+        new Label("TOP 10", 0, 0),
+        't',
+        () => {}
+      ),
+      new Shortcut(
+        8, 24, 14,
+        new Icon(0, 0, 56, 0),
+        new Label("RANDOM", 0, 0),
+        'r',
+        () => {}
+      ),
+      new Shortcut(
+        8, 40, 14,
+        new Icon(0, 0, 40, 0),
+        new Label("RETURN", 0, 0),
+        'q',
+        () => StateHandler.pop()
+      )
+    ];
+
+    /*this.#label_top10 = new Label("TOP 10", 90, 0);
     this.#label_top10.callback = () => {
       this.#cursor.timer = 0;
       fetch("http://localhost:5000/api/puzzles?count=10")
@@ -49,7 +79,7 @@ export default class PlayState extends State {
     this.#label_search = new Label("search", 90, 24);
     this.#label_search.callback = () => {};
 
-    this.#cursor = new Cursor(82, 0, 0, 0, 0, 24, 8, 0.3);
+    this.#cursor = new Cursor(82, 0, 0, 0, 0, 24, 8, 0.3);*/
   }
 
   onEnter() {}
@@ -58,23 +88,35 @@ export default class PlayState extends State {
   init() {}
 
   update(dt) {
-   this.#cursor.update(dt);
+    this.#inputTimer += dt;
 
-   if (this.#cursor.selected) {
-    if (this.#cursor.y === this.#label_top10.y) {
-      this.#label_top10.callback();
+    if (this.#inputTimer >= this.#inputDelay) {
+      if (KeyHandler.isDown(81)) {
+        this.#inputTimer = 0;
+        this.#shortcuts[2].callback();
+      }
     }
-    else if (this.#cursor.y === this.#label_random.y) {
-      this.#label_random.callback();
-    }
-   }
   }
 
   render() {
-    this.#label_top10.draw();
-    this.#label_random.draw();
-    this.#label_recent.draw();
-    this.#label_search.draw();
-    this.#cursor.draw();
+    StateHandler.previous.render();
+
+    Renderer.image(
+      `${settings.theme}_theme`,
+      0, 0, 8, 8,
+      0, 0, 17*8, SCREEN_HEIGHT
+    );
+
+    this.#shortcuts.forEach(shortcut => shortcut.draw());
+
+    // Background color
+    for (let i = 0; i < SCREEN_HEIGHT / TILE_SIZE; ++i) {
+      Renderer.image(
+        `${settings.theme}_theme`,
+        0, 8, TILE_SIZE, TILE_SIZE,
+        16 * 8, i * 8,
+        TILE_SIZE, TILE_SIZE
+      );
+    }
   }
 };

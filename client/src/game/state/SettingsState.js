@@ -25,7 +25,7 @@ export default class SettingsState extends State {
       new Shortcut(
         8, 8, 14,
         new Icon(0, 0, 32, 0),
-        new Label("fullscreen", 16, 0),
+        new Label("FULLSCREEN", 16, 0),
         'f',
         () => {
           document.querySelector("canvas")
@@ -38,8 +38,8 @@ export default class SettingsState extends State {
       new Shortcut(
         8, 24, 14,
         new Icon(0, 0, 40, 0),
-        new Label("return", 16, 0),
-        'r',
+        new Label("RETURN", 16, 0),
+        'q',
         () => StateHandler.pop()
       )
     ];
@@ -62,7 +62,7 @@ export default class SettingsState extends State {
         this.#inputTimer = 0;
         this.#shortcuts[0].callback();
       }
-      else if (KeyHandler.isDown(82)) {
+      else if (KeyHandler.isDown(81)) {
         this.#inputTimer = 0;
         this.#shortcuts[1].callback();
       }
@@ -80,7 +80,7 @@ export default class SettingsState extends State {
 
     this.#shortcuts.forEach(shortcut => shortcut.draw());
 
-    // Background color
+    // Border
     for (let i = 0; i < SCREEN_HEIGHT / TILE_SIZE; ++i) {
       Renderer.image(
         `${settings.theme}_theme`,
