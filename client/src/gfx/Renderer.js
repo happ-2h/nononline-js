@@ -51,7 +51,7 @@ class _Renderer {
     );
   }
 
-  imageText(text="", x=0, y=0) {
+  imageText(text="", x=0, y=0, small=false) {
     text = text?.toString();
 
     text.split('').forEach((c, cx) => {
@@ -68,13 +68,25 @@ class _Renderer {
         sy = 16;
       }
 
-      this.image(
-        `${settings.theme}_font`,
-        n * TILE_SIZE, sy,
-        TILE_SIZE, TILE_SIZE,
-        x + cx * TILE_SIZE, y,
-        TILE_SIZE, TILE_SIZE
-      );
+      if (!small) {
+        this.image(
+          `${settings.theme}_font`,
+          n * TILE_SIZE, sy,
+          TILE_SIZE, TILE_SIZE,
+          x + cx * TILE_SIZE, y,
+          TILE_SIZE, TILE_SIZE
+        );
+      }
+      else {
+        this.image(
+          `${settings.theme}_font`,
+          80 + n * 4, sy,
+          4, 4,
+          x + cx * 4, y,
+          4, 4
+        );
+      }
+
     });
   }
 
