@@ -31,7 +31,7 @@ export default class TitleScreenState extends State {
         80,
         17,
         new Icon(0, 0, 8, 0),
-        new Label("play", 0, 0),
+        new Label("Play", 0, 0),
         'p',
         () => StateHandler.push(new PlayState)
 
@@ -41,7 +41,7 @@ export default class TitleScreenState extends State {
         96,
         17,
         new Icon(0, 0, 16, 0),
-        new Label("create", 0, 0),
+        new Label("Create", 0, 0),
         'c',
         () => StateHandler.push(new CreateState)
       ),
@@ -50,7 +50,7 @@ export default class TitleScreenState extends State {
         112,
         17,
         new Icon(0, 0, 24, 0),
-        new Label("settings", 0, 0),
+        new Label("Settings", 0, 0),
         's',
         () => StateHandler.push(new SettingsState)
       )

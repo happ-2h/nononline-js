@@ -12,7 +12,7 @@ export default class Label {
     this.#id = id;
     this.#x  = x;
     this.#y  = y;
-    this.#string = string.toLowerCase();
+    this.#string = string;
     this.#callback = () => {};
   }
 

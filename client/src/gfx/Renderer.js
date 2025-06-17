@@ -52,17 +52,22 @@ class _Renderer {
   }
 
   imageText(text="", x=0, y=0) {
-    text = text?.toString()?.toLowerCase();
+    text = text?.toString();
 
     text.split('').forEach((c, cx) => {
       let n  = c.charCodeAt(0);
       let sy = 0;
 
-      if (c >= 'a' && c <= 'z') n -=  97;
+      if (c >= 'A' && c <= 'Z') n -=  65;
+      else if (c >= 'a' && c <= 'z') {
+        n -=  97;
+        sy = 8;
+      }
       else if (c >= '0' && c <= '9') {
         n -= 48;
-        sy += 8;
+        sy = 16;
       }
+
       this.image(
         `${settings.theme}_font`,
         n * TILE_SIZE, sy,
