@@ -1,7 +1,8 @@
-import { SCREEN_WIDTH, TILE_SIZE } from "../../game/constants";
-import settings from "../../game/settings";
+import Label    from "./Label";
 import Renderer from "../Renderer";
-import Label from "./Label";
+import settings from "../../game/settings";
+
+import { TILE_SIZE } from "../../game/constants";
 
 export default class Statusline {
   #x;
@@ -39,4 +40,7 @@ export default class Statusline {
     this.#label_mode.draw();
     this.#label_pos.draw();
   }
+
+  set pos(str)  { this.#label_pos.string = str; }
+  set mode(str) { this.#label_mode.string = str; }
 };
