@@ -8,12 +8,15 @@ import StateHandler from "../StateHandler";
 import Statusline   from "../../../gfx/ui/Statusline";
 import WinState     from "./WinState";
 
-import { SCREEN_HEIGHT, SCREEN_WIDTH, TILE_SIZE } from "../../constants";
+import {
+  SCREEN_HEIGHT,
+  SCREEN_WIDTH,
+  TILE_SIZE
+} from "../../constants";
 
 export default class SolveState extends State {
   #mode;
 
-  #puzzle;
   #board;
   #board_sol;
   #nums_cols;
@@ -34,7 +37,6 @@ export default class SolveState extends State {
      */
     this.#mode = 'f';
 
-    this.#puzzle = puzzle;
     this.#board =
       new Array(puzzle.height).fill(0)
       .map(() => new Array(puzzle.width).fill(0));
@@ -166,7 +168,8 @@ export default class SolveState extends State {
         this.#board[this.#cursor.coords.y][this.#cursor.coords.x] = 1;
 
         if (this.#didWin()) {
-          console.log("WINNER");
+          StateHandler.pop();
+          StateHandler.push(new WinState(this.#board_sol));
         }
       }
       else if (this.#mode === 'c') {
@@ -181,7 +184,8 @@ export default class SolveState extends State {
         this.#board[this.#cursor.coords.y][this.#cursor.coords.x] = 0;
 
         if (this.#didWin()) {
-          console.log("WINNER");
+          StateHandler.pop();
+          StateHandler.push(new WinState(this.#board_sol));
         }
       }
       else if (this.#mode === 'c') {
