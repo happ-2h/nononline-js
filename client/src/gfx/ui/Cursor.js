@@ -54,42 +54,49 @@ export default class Cursor {
   update(dt) {
     this.#inputTimer += dt;
 
-    if (this.#inputTimer >= this.#inputDelay) {
-      if (KeyHandler.isDown(37) || KeyHandler.isDown(72)) {
-        this.#inputTimer = 0;
-        this.#blinkTimer = 0;
-        this.#blinkState = 1;
-        this.#x = clamp(this.#x - 8, this.#xMin, this.#xMax);
+    if (
+      this.#xMin > 0 ||
+      this.#xMax > 0 ||
+      this.#yMin > 0 ||
+      this.#yMax > 0
+    ) {
+      if (this.#inputTimer >= this.#inputDelay) {
+        if (KeyHandler.isDown(37) || KeyHandler.isDown(72)) {
+          this.#inputTimer = 0;
+          this.#blinkTimer = 0;
+          this.#blinkState = 1;
+          this.#x = clamp(this.#x - 8, this.#xMin, this.#xMax);
+        }
+        else if (KeyHandler.isDown(39) || KeyHandler.isDown(76)) {
+          this.#inputTimer = 0;
+          this.#blinkTimer = 0;
+          this.#blinkState = 1;
+          this.#x = clamp(this.#x + 8, this.#xMin, this.#xMax);
+        }
+        else if (KeyHandler.isDown(38) || KeyHandler.isDown(75)) {
+          this.#inputTimer = 0;
+          this.#blinkTimer = 0;
+          this.#blinkState = 1;
+          this.#y = clamp(this.#y - 8, this.#yMin, this.#yMax);
+        }
+        else if (KeyHandler.isDown(40) || KeyHandler.isDown(74)) {
+          this.#inputTimer = 0;
+          this.#blinkTimer = 0;
+          this.#blinkState = 1;
+          this.#y = clamp(this.#y + 8, this.#yMin, this.#yMax);
+        }
       }
-      else if (KeyHandler.isDown(39) || KeyHandler.isDown(76)) {
-        this.#inputTimer = 0;
-        this.#blinkTimer = 0;
-        this.#blinkState = 1;
-        this.#x = clamp(this.#x + 8, this.#xMin, this.#xMax);
-      }
-      else if (KeyHandler.isDown(38) || KeyHandler.isDown(75)) {
-        this.#inputTimer = 0;
-        this.#blinkTimer = 0;
-        this.#blinkState = 1;
-        this.#y = clamp(this.#y - 8, this.#yMin, this.#yMax);
-      }
-      else if (KeyHandler.isDown(40) || KeyHandler.isDown(74)) {
-        this.#inputTimer = 0;
-        this.#blinkTimer = 0;
-        this.#blinkState = 1;
-        this.#y = clamp(this.#y + 8, this.#yMin, this.#yMax);
-      }
-    }
 
-    if (KeyHandler.isDown(32)) {
-      this.#selected = true;
-    }
-    else this.#selected = false;
+      if (KeyHandler.isDown(32)) {
+        this.#selected = true;
+      }
+      else this.#selected = false;
 
-    if (KeyHandler.isDown(186)) {
-      this.#unselected = true;
+      if (KeyHandler.isDown(186)) {
+        this.#unselected = true;
+      }
+      else this.#unselected = false;
     }
-    else this.#unselected = false;
 
     if (this.#blink) {
       this.#blinkTimer += dt;
@@ -122,4 +129,7 @@ export default class Cursor {
   get y() { return this.#y; }
   get selected() { return this.#selected; }
   get unselected() { return this.#unselected; }
+
+  set x(_x) { this.#x = _x; }
+  set y(_y) { this.#y = _y; }
 };
