@@ -1,14 +1,18 @@
-import Cursor             from "../../../gfx/ui/Cursor";
-import Entity_BasicCursor from "../../../entity/Entity_BasicCursor";
-import KeyHandler         from "../../../input/KeyHandler";
-import Renderer           from "../../../gfx/Renderer";
-import State              from "../State";
-import StateHandler       from "../StateHandler";
-import WinState           from "./WinState";
+import Board        from "../../../gfx/ui/Board";
+import Cursor       from "../../../gfx/ui/Cursor";
+import KeyHandler   from "../../../input/KeyHandler";
+import Renderer     from "../../../gfx/Renderer";
+import settings     from "../../settings";
+import State        from "../State";
+import StateHandler from "../StateHandler";
+import Statusline   from "../../../gfx/ui/Statusline";
+import WinState     from "./WinState";
 
-import { SCREEN_WIDTH, TILE_SIZE } from "../../constants";
+import { SCREEN_HEIGHT, SCREEN_WIDTH, TILE_SIZE } from "../../constants";
 
 export default class SolveState extends State {
+  #mode;
+
   #puzzle;
   #board;
   #board_sol;
@@ -16,12 +20,19 @@ export default class SolveState extends State {
   #nums_rows;
   #lives;
 
+  #statusline;
+  #board_ui;
   #cursor;
-  #cursor_col;
-  #cursor_row;
 
   constructor(puzzle) {
     super();
+
+    /*
+      f = fill
+      c = cross
+      r = count
+     */
+    this.#mode = 'f';
 
     this.#puzzle = puzzle;
     this.#board =
@@ -97,27 +108,33 @@ export default class SolveState extends State {
     this.#nums_cols.forEach(arr => arr.reverse());
     this.#nums_rows.forEach(arr => arr.reverse());
 
+    this.#statusline = new Statusline(
+      0, SCREEN_HEIGHT - 12,
+      SCREEN_WIDTH, TILE_SIZE,
+      puzzle.title
+    );
+
+    this.#statusline.mode = "FILL";
+
+    this.#board_ui = new Board(
+      8 * (38 - puzzle.width),
+      8 * (20 - puzzle.height),
+      puzzle.width,
+      puzzle.height
+    );
+
     this.#cursor = new Cursor(
-      (SCREEN_WIDTH / 2 - ((this.#puzzle.width / 2) * 8)) + 8,
-      48,
-      (SCREEN_WIDTH / 2 - ((this.#puzzle.width / 2) * 8)) + 8,
-      (SCREEN_WIDTH / 2 - ((this.#puzzle.width / 2) * 8)) + 8 * (this.#board[0].length),
-      48,
-      48 + 8 * (this.#board.length - 1),
-      8, 0.3, false, true
+      this.#board_ui.x,
+      this.#board_ui.y,
+      this.#board_ui.x,
+      this.#board_ui.x + (this.#board_ui.width-1) * TILE_SIZE,
+      this.#board_ui.y,
+      this.#board_ui.y + (this.#board_ui.height-1) * TILE_SIZE,
+      true,
+      0.53
     );
 
-    this.#cursor_col = new Entity_BasicCursor(
-      (SCREEN_WIDTH / 2 - ((this.#puzzle.width / 2) * 8)),
-      48 - 8,
-      16, 208
-    );
-    this.#cursor_row = new Entity_BasicCursor(
-      (SCREEN_WIDTH / 2 - ((this.#puzzle.width / 2) * 8)) - 8,
-      48,
-      24, 208
-    );
-
+    // TEMP for debugging
     console.log(this.#board_sol);
   }
 
@@ -128,42 +145,50 @@ export default class SolveState extends State {
 
   update(dt) {
     this.#cursor.update(dt);
-    this.#cursor_col.x = this.#cursor.x - TILE_SIZE;
-    this.#cursor_row.y = this.#cursor.y;
 
-    const cursorx = ((this.#cursor.x - (SCREEN_WIDTH / 2 - ((this.#puzzle.width / 2) * 8))) / 8) - 1;
-    const cursory = (this.#cursor.y - 48) / 8;
+    if (KeyHandler.isDown(70)) {
+      this.#mode = 'f';
+      this.#statusline.mode = "FILL";
+    }
+    else if (KeyHandler.isDown(67)) {
+      this.#mode = 'c';
+      this.#statusline.mode = "CROSS";
+    }
+    else if (KeyHandler.isDown(82)) {
+      this.#mode = 'r';
+      this.#statusline.mode = "COUNT";
+    }
 
-    // Markers
-    // - Set
-    if (KeyHandler.isDown(49)) {
-      if (this.#cursor.timer >= this.#cursor.delay) {
-        this.#cursor.timer = 0;
+    this.#statusline.pos = `${this.#cursor.coords.y} ${this.#cursor.coords.x}`;
 
-        this.#board[cursory][cursorx] = this.#board[cursory][cursorx] !== 1 ? 1 : 0;
-
-        this.#checkWrong(cursorx, cursory);
+    if (this.#cursor.selected) {
+      if (this.#mode === 'f') {
+        this.#board[this.#cursor.coords.y][this.#cursor.coords.x] = 1;
 
         if (this.#didWin()) {
-          StateHandler.pop();
-          StateHandler.push(new WinState(this.#board_sol));
+          console.log("WINNER");
         }
       }
-    }
-    // - Cross
-    else if (KeyHandler.isDown(50)) {
-      if (this.#cursor.timer >= this.#cursor.delay) {
-        this.#cursor.timer = 0;
-
-        this.#board[cursory][cursorx] = this.#board[cursory][cursorx] !== 2 ? 2 : 0;
+      else if (this.#mode === 'c') {
+        this.#board[this.#cursor.coords.y][this.#cursor.coords.x] = 2;
+      }
+      else if (this.#mode === 'r') {
+        this.#board[this.#cursor.coords.y][this.#cursor.coords.x] = 3;
       }
     }
-    // - Mark
-    else if (KeyHandler.isDown(51)) {
-      if (this.#cursor.timer >= this.#cursor.delay) {
-        this.#cursor.timer = 0;
+    else if (this.#cursor.unselected) {
+      if (this.#mode === 'f') {
+        this.#board[this.#cursor.coords.y][this.#cursor.coords.x] = 0;
 
-        this.#board[cursory][cursorx] = this.#board[cursory][cursorx] !== 3 ? 3 : 0;
+        if (this.#didWin()) {
+          console.log("WINNER");
+        }
+      }
+      else if (this.#mode === 'c') {
+        this.#board[this.#cursor.coords.y][this.#cursor.coords.x] = 0;
+      }
+      else if (this.#mode === 'r') {
+        this.#board[this.#cursor.coords.y][this.#cursor.coords.x] = 0;
       }
     }
   }
@@ -174,35 +199,27 @@ export default class SolveState extends State {
       row.forEach((num, x) => {
         if (num > 0) {
           Renderer.image(
-            "spritesheet",
-            num * TILE_SIZE, 200, TILE_SIZE, TILE_SIZE,
-            (SCREEN_WIDTH / 2 - ((this.#puzzle.width / 2) * 8)) + x * TILE_SIZE,
-            48 + y * TILE_SIZE,
+            `${settings.theme}_theme`,
+            num * TILE_SIZE, 16, TILE_SIZE, TILE_SIZE,
+            this.#board_ui.x + x * TILE_SIZE,
+            this.#board_ui.y + y * TILE_SIZE,
             TILE_SIZE, TILE_SIZE
           )
         }
       });
     });
 
-    // Draw grid
-    for (let x = 0; x < this.#puzzle.width; ++x) {
-      for (let y = 0; y < this.#puzzle.height; ++y) {
-        Renderer.image(
-          "spritesheet",
-          0, 192, TILE_SIZE, TILE_SIZE,
-          (SCREEN_WIDTH / 2 - ((this.#puzzle.width / 2) * 8)) + x * TILE_SIZE,
-          48 + y * TILE_SIZE,
-          TILE_SIZE, TILE_SIZE
-        );
-      }
-    }
-
     // Draw numbers
     // - Cols
     for (let y = 0; y < this.#nums_cols.length; ++y) {
       // 0
       if (this.#nums_cols[y].length === 0)
-        Renderer.imageText("0", (SCREEN_WIDTH / 2 - ((this.#puzzle.width / 2) * 8)) + y * 8, 48 - 12);
+        Renderer.imageText(
+          "0",
+          this.#board_ui.x + y * 8 + 2,
+          this.#board_ui.y - 8,
+          true
+        );
 
       for (let x = 0; x < this.#nums_cols[y].length; ++x) {
         let n = this.#nums_cols[y][x];
@@ -210,30 +227,40 @@ export default class SolveState extends State {
         if (n >= 10) {
           // 1
           Renderer.image(
-            "spritesheet",
-            84, 248, 4, 4,
-            (SCREEN_WIDTH / 2 - ((this.#puzzle.width / 2) * 8)) + (y * 8),
-            48 - 12 - x * 8,
-            4, 8
+            `${settings.theme}_font`,
+            84, 16, 4, 4,
+            this.#board_ui.x + y * 8,
+            this.#board_ui.y - 8,
+            4, 4
           );
           // One's place
           Renderer.image(
-            "spritesheet",
-            80 + (n%10) * 4, 248, 4, 4,
-            (SCREEN_WIDTH / 2 - ((this.#puzzle.width / 2) * 8)) + (y * 8) + 4,
-            48 - 12 - x * 8,
-            4, 8
+            `${settings.theme}_font`,
+            80 + (n%10) * 4, 16, 4, 4,
+            this.#board_ui.x + y * 8 + 4,
+            this.#board_ui.y - 8,
+            4, 4
           );
         }
         else
-          Renderer.imageText(n, (SCREEN_WIDTH / 2 - ((this.#puzzle.width / 2) * 8)) + y * 8, 48 - 12 - x * 8);
+          Renderer.imageText(
+            n,
+            this.#board_ui.x + y * 8 + 2,
+            this.#board_ui.y - 8 - x * 5,
+            true
+          );
       }
     }
     // - Rows
     for (let y = 0; y < this.#nums_rows.length; ++y) {
       // 0
       if (this.#nums_rows[y].length === 0)
-        Renderer.imageText("0", (SCREEN_WIDTH / 2 - ((this.#puzzle.width / 2) * 8))-12, 48 + y * 8);
+        Renderer.imageText(
+          '0',
+          this.#board_ui.x - 8,
+          this.#board_ui.y + 2 + y * 8,
+          true
+        );
 
       for (let x = 0; x < this.#nums_rows[y].length; ++x) {
         let n = this.#nums_rows[y][x];
@@ -241,30 +268,36 @@ export default class SolveState extends State {
         if (n >= 10) {
           // 1
           Renderer.image(
-            "spritesheet",
-            84, 248, 4, 4,
-            (SCREEN_WIDTH / 2 - ((this.#puzzle.width / 2) * 8)) - 12 - (x * 8),
-            48 + y * 8,
-            4, 8
+            `${settings.theme}_font`,
+            84, 16, 4, 4,
+            this.#board_ui.x - 8 - x * 8,
+            this.#board_ui.y + y * 8 + 2,
+            4, 4
           );
           // One's place
           Renderer.image(
-            "spritesheet",
-            80 + (n%10) * 4, 248, 4, 4,
-            (SCREEN_WIDTH / 2 - ((this.#puzzle.width / 2) * 8)) - 8 - (x * 8),
-            48 + y * 8,
-            4, 8
+            `${settings.theme}_font`,
+            80 + (n%10) * 4, 16, 4, 4,
+            this.#board_ui.x - 4 - x * 4,
+            this.#board_ui.y + y * 8 + 2,
+            4, 4
           );
         }
         else
-          Renderer.imageText(n, (SCREEN_WIDTH / 2 - ((this.#puzzle.width / 2) * 8)) - 12 - (x * 8), 48 + y * 8);
+          Renderer.imageText(
+            n,
+            this.#board_ui.x - 8 - x * 5,
+            this.#board_ui.y + y * 8 + 2,
+            true
+          );
       }
     }
 
+    this.#statusline.draw();
+    this.#board_ui.draw();
     this.#cursor.draw();
 
-    this.#cursor_col.draw();
-    this.#cursor_row.draw();
+    Renderer.drawGrid();
   }
 
   #checkWrong(x=-1, y=-1) {
