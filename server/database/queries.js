@@ -41,9 +41,15 @@ ORDER BY random()
 LIMIT 1
 `);
 
+const getPuzzleByName = database.prepare(`
+SELECT * FROM puzzles
+WHERE title = ?
+`);
+
 export {
   createPuzzle,
   getPuzzle,
   getPuzzles,
+  getPuzzleByName,
   getRandomPuzzle
 };

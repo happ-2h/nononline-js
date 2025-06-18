@@ -3,6 +3,7 @@ import express from "express";
 import {
   createPuzzle,
   getPuzzle,
+  getPuzzleByName,
   getPuzzles,
   getRandomPuzzle
 } from "../database/queries.js";
@@ -83,7 +84,7 @@ puzzlesRouter.post('/', (req, res) => {
 
 // Get multiple puzzles
 puzzlesRouter.get('/', (req, res) => {
-  const { skip, count, random } = req.query;
+  const { skip, count, random, search } = req.query;
 
   if (count === undefined) {
     return res.status(400).json({
@@ -97,6 +98,7 @@ puzzlesRouter.get('/', (req, res) => {
   const cnvSkip   = parseInt(skip || 0);
   const cnvCount  = parseInt(count);
   const cnvRandom = parseInt(random || 0);
+  const cnvSearch = search?.toString().toLowerCase().trim();
 
   if (isNaN(cnvSkip)) {
     return res.status(400).json({
@@ -119,12 +121,32 @@ puzzlesRouter.get('/', (req, res) => {
     });
   }
 
+  if (cnvSearch !== undefined) {
+    if (cnvSearch.length === 0) {
+      return res.status(400).json({
+        status: 400,
+        error: "Search query cannot be empty"
+      });
+    }
+    else if (cnvSearch.length > 10) {
+      return res.status(400).json({
+        status: 400,
+        error: "Search query must be 1 to 10 characters"
+      });
+    }
+  }
+
+  // Get data
+  let data = null;
+
+  if (cnvRandom === 1) data = getRandomPuzzle.get();
+  else if (cnvSearch !== undefined) data = getPuzzleByName.all(cnvSearch);
+  else data = getPuzzles.all(cnvSkip, cnvCount);
+
   // Input passed validation
   res.status(200).json({
     status: 200,
-    data: cnvRandom === 1 ?
-          getRandomPuzzle.get() :
-          getPuzzles.all(cnvSkip, cnvCount)
+    data
   });
 });
 
