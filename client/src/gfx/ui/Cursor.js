@@ -31,7 +31,6 @@ export default class Cursor {
     yMin=0, yMax=0,
     blink=false, blinkSpeed=0
   ) {
-    console.log(xMin, xMax);
     this.#x = x;
     this.#y = y;
 
@@ -110,6 +109,13 @@ export default class Cursor {
         this.#x, this.#y, TILE_SIZE, TILE_SIZE
       );
     }
+  }
+
+  get coords() {
+    return {
+      x: (this.#x - this.#xMin) / TILE_SIZE,
+      y: (this.#y - this.#yMin) / TILE_SIZE
+    };
   }
 
   get x() { return this.#x; }
