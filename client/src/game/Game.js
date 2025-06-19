@@ -19,7 +19,10 @@ export default class Game {
     this.#last = performance.now();
 
     ThemeHandler.loadList()
-      .then(val => this.init())
+      .then(val => {
+        ThemeHandler.loadUserTheme();
+        this.init();
+      })
       .catch(err => console.error(err));
   }
 

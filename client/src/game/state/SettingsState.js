@@ -8,6 +8,7 @@ import Shortcut     from "../../gfx/ui/Shortcut";
 import StateHandler from "./StateHandler";
 
 import { SCREEN_HEIGHT, TILE_SIZE } from "../constants";
+import ThemeHandler from "../../utils/ThemeHandler";
 
 export default class SettingsState extends State {
   #shortcuts;
@@ -37,6 +38,13 @@ export default class SettingsState extends State {
       ),
       new Shortcut(
         8, 24, 14,
+        new Icon(0, 0, 32, 8),
+        new Label("THEME", 0, 0),
+        't',
+        () => ThemeHandler.next()
+      ),
+      new Shortcut(
+        8, 40, 14,
         new Icon(0, 0, 40, 0),
         new Label("RETURN", 16, 0),
         'q',
@@ -58,13 +66,20 @@ export default class SettingsState extends State {
     this.#inputTimer += dt;
 
     if (this.#inputTimer >= this.#inputDelay) {
+      // Fullscreen
       if (KeyHandler.isDown(70)) {
         this.#inputTimer = 0;
         this.#shortcuts[0].callback();
       }
-      else if (KeyHandler.isDown(81)) {
+      // Theme changer
+      else if (KeyHandler.isDown(84)) {
         this.#inputTimer = 0;
         this.#shortcuts[1].callback();
+      }
+      // Return
+      else if (KeyHandler.isDown(81)) {
+        this.#inputTimer = 0;
+        this.#shortcuts[2].callback();
       }
     }
   }
