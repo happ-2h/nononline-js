@@ -9,6 +9,7 @@ import State             from "../State";
 import StateHandler      from "../StateHandler";
 
 import { SCREEN_HEIGHT, TILE_SIZE } from "../../constants";
+import SearchState from "./SearchState";
 
 export default class PlayState extends State {
   #inputTimer;
@@ -56,6 +57,13 @@ export default class PlayState extends State {
       ),
       new Shortcut(
         8, 40, 14,
+        new Icon(0, 0, 48, 8),
+        new Label("SEARCH", 0, 0),
+        's',
+        () => StateHandler.push(new SearchState)
+      ),
+      new Shortcut(
+        8, 56, 14,
         new Icon(0, 0, 40, 0),
         new Label("RETURN", 0, 0),
         'q',
@@ -83,10 +91,15 @@ export default class PlayState extends State {
         this.#inputTimer = 0;
         this.#shortcuts[1].callback();
       }
+      // Search
+      else if (KeyHandler.isDown(83)) {
+        this.#inputTimer = 0;
+        this.#shortcuts[2].callback();
+      }
       // Quit
       else if (KeyHandler.isDown(81)) {
         this.#inputTimer = 0;
-        this.#shortcuts[2].callback();
+        this.#shortcuts[3].callback();
       }
     }
   }
