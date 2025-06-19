@@ -143,6 +143,14 @@ puzzlesRouter.get('/', (req, res) => {
   else if (cnvSearch !== undefined) data = getPuzzleByName.all(cnvSearch);
   else data = getPuzzles.all(cnvSkip, cnvCount);
 
+  // No data found
+  if (!data || data.length === 0) {
+    return res.status(404).json({
+      status: 404,
+      error: "Not found"
+    });
+  }
+
   // Input passed validation
   res.status(200).json({
     status: 200,
