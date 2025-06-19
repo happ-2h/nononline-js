@@ -44,6 +44,7 @@ LIMIT 1
 const getPuzzleByName = database.prepare(`
 SELECT * FROM puzzles
 WHERE title = ?
+LIMIT 10
 `);
 
 export {
