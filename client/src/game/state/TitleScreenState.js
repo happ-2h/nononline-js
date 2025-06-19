@@ -29,7 +29,7 @@ export default class TitleScreenState extends State {
     this.#shortcuts = [
       new Shortcut(
         SCREEN_WIDTH / 4 + 8,
-        80,
+        96,
         17,
         new Icon(0, 0, 8, 0),
         new Label("Play", 0, 0),
@@ -39,7 +39,7 @@ export default class TitleScreenState extends State {
       ),
       new Shortcut(
         SCREEN_WIDTH / 4 + 8,
-        96,
+        112,
         17,
         new Icon(0, 0, 16, 0),
         new Label("Create", 0, 0),
@@ -48,7 +48,7 @@ export default class TitleScreenState extends State {
       ),
       new Shortcut(
         SCREEN_WIDTH / 4 + 8,
-        112,
+        128,
         17,
         new Icon(0, 0, 24, 0),
         new Label("Settings", 0, 0),
