@@ -3,13 +3,13 @@ import KeyHandler        from "../../../input/KeyHandler";
 import Label             from "../../../gfx/ui/Label";
 import Renderer          from "../../../gfx/Renderer";
 import Shortcut          from "../../../gfx/ui/Shortcut";
+import SearchState       from "./SearchState";
 import SelectPuzzleState from "./SelectPuzzleState";
 import settings          from "../../settings";
 import State             from "../State";
 import StateHandler      from "../StateHandler";
 
 import { SCREEN_HEIGHT, TILE_SIZE } from "../../constants";
-import SearchState from "./SearchState";
 
 export default class PlayState extends State {
   #inputTimer;
@@ -107,9 +107,10 @@ export default class PlayState extends State {
   render() {
     StateHandler.previous.render();
 
+    // Background
     Renderer.image(
       `${settings.theme}_theme`,
-      0, 0, 8, 8,
+      0, 56, 8, 8,
       0, 0, 17*8, SCREEN_HEIGHT
     );
 

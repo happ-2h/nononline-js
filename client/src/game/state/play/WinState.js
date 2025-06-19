@@ -7,7 +7,11 @@ import Shortcut     from "../../../gfx/ui/Shortcut";
 import State        from "../State";
 import StateHandler from "../StateHandler";
 
-import { TILE_SIZE } from "../../constants";
+import {
+  SCREEN_HEIGHT,
+  SCREEN_WIDTH,
+  TILE_SIZE
+} from "../../constants";
 
 export default class WinState extends State {
   #shortcuts;
@@ -65,6 +69,15 @@ export default class WinState extends State {
   }
 
   render() {
+    // Background
+    Renderer.image(
+      `${settings.theme}_theme`,
+      0, 56, TILE_SIZE, TILE_SIZE,
+      0, 0,
+      SCREEN_WIDTH,
+      SCREEN_HEIGHT
+    );
+
     this.#label_complete.draw();
 
     this.#pixels.forEach((row, y) => {
@@ -82,7 +95,5 @@ export default class WinState extends State {
     });
 
     this.#shortcuts.forEach(shortcut => shortcut.draw());
-
-    Renderer.drawGrid();
   }
 };

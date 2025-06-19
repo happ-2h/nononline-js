@@ -29,7 +29,7 @@ export default class Statusline {
     // Background
     Renderer.image(
       `${settings.theme}_theme`,
-      0, 56, TILE_SIZE, TILE_SIZE,
+      8, 56, TILE_SIZE, TILE_SIZE,
       this.#x,
       this.#y,
       this.#width,

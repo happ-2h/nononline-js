@@ -2,9 +2,16 @@ import Cursor       from "../../../gfx/ui/Cursor";
 import Icon         from "../../../gfx/ui/Icon";
 import KeyHandler   from "../../../input/KeyHandler";
 import Renderer     from "../../../gfx/Renderer";
+import settings     from "../../settings";
 import SolveState   from "./SolveState";
 import State        from "../State";
 import StateHandler from "../StateHandler";
+
+import {
+  SCREEN_HEIGHT,
+  SCREEN_WIDTH,
+  TILE_SIZE
+} from "../../constants";
 
 export default class SearchState extends State {
   #icon_slash;
@@ -67,6 +74,15 @@ export default class SearchState extends State {
   }
 
   render() {
+    // Background
+    Renderer.image(
+      `${settings.theme}_theme`,
+      0, 56, TILE_SIZE, TILE_SIZE,
+      0, 0,
+      SCREEN_WIDTH,
+      SCREEN_HEIGHT
+    );
+
     this.#icon_slash.draw();
 
     Renderer.imageText(this.#searchString, 16, 21*8);
@@ -88,8 +104,6 @@ export default class SearchState extends State {
         );
       });
     }
-
-    Renderer.drawGrid();
   }
 
   #handleInput(dt) {

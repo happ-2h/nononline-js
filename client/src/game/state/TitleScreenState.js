@@ -13,6 +13,7 @@ import StateHandler  from "./StateHandler";
 import {
   BANNER_HEIGHT,
   BANNER_WIDTH,
+  SCREEN_HEIGHT,
   SCREEN_WIDTH,
 } from "../constants";
 
@@ -85,6 +86,15 @@ export default class TitleScreenState extends State {
   }
 
   render() {
+    // Background
+    Renderer.image(
+      `${settings.theme}_theme`,
+      0, 56, 8, 8,
+      0, 0,
+      SCREEN_WIDTH,
+      SCREEN_HEIGHT
+    );
+
     this.#shortcuts.forEach(shortcut => shortcut.draw());
 
     Renderer.image(

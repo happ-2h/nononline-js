@@ -6,9 +6,9 @@ import State        from "./State";
 import settings     from "../settings";
 import Shortcut     from "../../gfx/ui/Shortcut";
 import StateHandler from "./StateHandler";
+import ThemeHandler from "../../utils/ThemeHandler";
 
 import { SCREEN_HEIGHT, TILE_SIZE } from "../constants";
-import ThemeHandler from "../../utils/ThemeHandler";
 
 export default class SettingsState extends State {
   #shortcuts;
@@ -87,10 +87,13 @@ export default class SettingsState extends State {
   render() {
     StateHandler.previous.render();
 
+    // Background
     Renderer.image(
       `${settings.theme}_theme`,
-      0, 0, 8, 8,
-      0, 0, 17*8, SCREEN_HEIGHT
+      0, 56, TILE_SIZE, TILE_SIZE,
+      0, 0,
+      17*8,
+      SCREEN_HEIGHT
     );
 
     this.#shortcuts.forEach(shortcut => shortcut.draw());

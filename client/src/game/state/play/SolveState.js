@@ -198,6 +198,15 @@ export default class SolveState extends State {
   }
 
   render() {
+    // Background
+    Renderer.image(
+      `${settings.theme}_theme`,
+      0, 56, TILE_SIZE, TILE_SIZE,
+      0, 0,
+      SCREEN_WIDTH,
+      SCREEN_HEIGHT
+    );
+
     // Draw board
     this.#board.forEach((row, y) => {
       row.forEach((num, x) => {
@@ -300,8 +309,6 @@ export default class SolveState extends State {
     this.#statusline.draw();
     this.#board_ui.draw();
     this.#cursor.draw();
-
-    Renderer.drawGrid();
   }
 
   #checkWrong(x=-1, y=-1) {

@@ -1,12 +1,14 @@
 import Icon         from "../../../gfx/ui/Icon";
 import KeyHandler   from "../../../input/KeyHandler";
 import Label        from "../../../gfx/ui/Label";
+import Renderer     from "../../../gfx/Renderer";
+import settings     from "../../settings";
 import Shortcut     from "../../../gfx/ui/Shortcut";
 import SolveState   from "./SolveState";
 import State        from "../State";
 import StateHandler from "../StateHandler";
 
-import { SCREEN_WIDTH } from "../../constants";
+import { SCREEN_HEIGHT, SCREEN_WIDTH } from "../../constants";
 
 export default class SelectPuzzleState extends State {
   #inputTimer;
@@ -130,6 +132,15 @@ export default class SelectPuzzleState extends State {
   }
 
   render() {
+    // Background
+    Renderer.image(
+      `${settings.theme}_theme`,
+      0, 56, 8, 8,
+      0, 0,
+      SCREEN_WIDTH,
+      SCREEN_HEIGHT
+    );
+
     this.#shortcuts.forEach(shortcut => shortcut.draw());
   }
 };

@@ -10,6 +10,7 @@ import StateHandler from "./StateHandler";
 import Statusline   from "../../gfx/ui/Statusline";
 
 import {
+  SCREEN_HEIGHT,
   SCREEN_WIDTH,
   TILE_SIZE
 } from "../constants";
@@ -147,6 +148,15 @@ export default class CreateState extends State {
   }
 
   render() {
+    // Background
+    Renderer.image(
+      `${settings.theme}_theme`,
+      0, 56, 8, 8,
+      0, 0,
+      SCREEN_WIDTH,
+      SCREEN_HEIGHT
+    );
+
     if (this.#state === 0) {
       Renderer.imageText(this.#file.title, 64, 8);
       Renderer.imageText(this.#file.width, 64, 24);
@@ -188,8 +198,6 @@ export default class CreateState extends State {
       this.#label_submit.draw();
       this.#label_width.draw();
     }
-
-    Renderer.drawGrid();
   }
 
   #handleInput(dt) {

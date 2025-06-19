@@ -1,9 +1,16 @@
-import State    from "./State";
-import Shortcut from "../../gfx/ui/Shortcut";
-import Icon from "../../gfx/ui/Icon";
-import Label from "../../gfx/ui/Label";
-import { SCREEN_WIDTH } from "../constants";
+import Icon       from "../../gfx/ui/Icon";
 import KeyHandler from "../../input/KeyHandler";
+import Label      from "../../gfx/ui/Label";
+import Renderer   from "../../gfx/Renderer";
+import settings   from "../settings";
+import Shortcut   from "../../gfx/ui/Shortcut";
+import State      from "./State";
+
+import {
+  SCREEN_HEIGHT,
+  SCREEN_WIDTH,
+  TILE_SIZE
+} from "../constants";
 
 export default class TestState extends State {
   #shortcut_play;
@@ -52,10 +59,17 @@ export default class TestState extends State {
   }
 
   render() {
+    // Background
+    Renderer.image(
+      `${settings.theme}_theme`,
+      0, 0, TILE_SIZE, TILE_SIZE,
+      0, 0,
+      SCREEN_WIDTH,
+      SCREEN_HEIGHT
+    );
+
     this.#shortcut_play.draw();
     this.#shortcut_create.draw();
     this.#shortcut_settings.draw();
-
-    // Renderer.drawGrid();
   }
 };
