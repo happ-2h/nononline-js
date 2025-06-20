@@ -27,7 +27,7 @@ export default class PlayState extends State {
       new Shortcut(
         8, 8, 14,
         new Icon(0, 0, 48, 0),
-        new Label("TOP 10", 0, 0),
+        new Label("RECENT", 0, 0),
         't',
         () => {
           fetch("http://localhost:5000/api/puzzles?count=10")
