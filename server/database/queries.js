@@ -8,10 +8,11 @@ const database = new DatabaseSync(`${import.meta.dirname}/nononline.db`);
 const initDB = `
 CREATE TABLE IF NOT EXISTS puzzles (
   puzzle_id TEXT PRIMARY KEY NOT NULL UNIQUE,
-  title  TEXT    NOT NULL,
-  width  INTEGER NOT NULL,
-  height INTEGER NOT NULL,
-  puzzle TEXT    NOT NULL,
+  title   TEXT    NOT NULL,
+  width   INTEGER NOT NULL,
+  height  INTEGER NOT NULL,
+  puzzle  TEXT    NOT NULL,
+  created INTEGER NOT NULL,
   CHECK (length(title) <= 10)
 )
 `;
@@ -19,8 +20,8 @@ CREATE TABLE IF NOT EXISTS puzzles (
 database.exec(initDB);
 
 const createPuzzle = database.prepare(`
-INSERT INTO puzzles (puzzle_id, title, width, height, puzzle)
-VALUES (?, ?, ?, ?, ?)
+INSERT INTO puzzles (puzzle_id, title, width, height, puzzle, created)
+VALUES (?, ?, ?, ?, ?, strftime('%s','now'))
 RETURNING puzzle_id, title
 `);
 
@@ -31,7 +32,7 @@ WHERE puzzle_id = ?
 
 const getPuzzles = database.prepare(`
 SELECT * FROM puzzles
-ORDER BY title
+ORDER BY created
 LIMIT ?, ?
 `);
 

@@ -71,7 +71,11 @@ puzzlesRouter.post('/', (req, res) => {
 
   // Add puzzle to the database
   const newPuzzle = createPuzzle.get(
-    puzzle_id, cnvTitle, cnvWidth, cnvHeight, puzzle.toString()
+    puzzle_id,
+    cnvTitle,
+    cnvWidth,
+    cnvHeight,
+    puzzle.toString()
   );
 
   res.status(201).json({
@@ -178,12 +182,13 @@ puzzlesRouter.get('/puzzle/:id', (req, res) => {
   const puzzle = getPuzzle.get(cnvId);
 
   res.status(200).json({
-    status: 200,
-    id:     puzzle.puzzle_id,
-    title:  puzzle.title,
-    width:  puzzle.width,
-    height: puzzle.height,
-    puzzle: puzzle.puzzle
+    status:  200,
+    id:      puzzle.puzzle_id,
+    title:   puzzle.title,
+    width:   puzzle.width,
+    height:  puzzle.height,
+    puzzle:  puzzle.puzzle,
+    created: puzzle.created
   });
 });
 
