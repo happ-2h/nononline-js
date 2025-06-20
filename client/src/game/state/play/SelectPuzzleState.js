@@ -30,7 +30,7 @@ export default class SelectPuzzleState extends State {
     data.forEach((puzzle, i) => {
       this.#shortcuts.push(
         new Shortcut(
-          SCREEN_WIDTH / 4 + 16,
+          8,
           8 + i * 16, 16,
           new Icon(0, 0, 8, 0),
           new Label(puzzle.title, 0, 0, puzzle.id),
@@ -42,8 +42,24 @@ export default class SelectPuzzleState extends State {
 
     this.#shortcuts.push(
       new Shortcut(
-        SCREEN_WIDTH / 4 + 16,
-        8 + 10 * 16, 16,
+        24*8,
+        8, 14,
+        new Icon(0, 0, 56, 16),
+        new Label("NEXT", 0, 0),
+        'n',
+        () => {}
+      ),
+      new Shortcut(
+        24*8,
+        24, 14,
+        new Icon(0, 0, 48, 16),
+        new Label("PREVIOUS", 0, 0),
+        'p',
+        () => {}
+      ),
+      new Shortcut(
+        24*8,
+        40, 14,
         new Icon(0, 0, 40, 0),
         new Label("RETURN", 0, 0),
         'q',
