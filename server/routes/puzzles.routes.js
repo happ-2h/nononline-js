@@ -88,37 +88,16 @@ puzzlesRouter.post('/', (req, res) => {
 
 // Get multiple puzzles
 puzzlesRouter.get('/', (req, res) => {
-  const { skip, count, random, search } = req.query;
-
-  if (count === undefined) {
-    return res.status(400).json({
-      status: 400,
-      error:  "count=<number> query is required"
-    });
-  }
+  const { random, search } = req.query;
+  const range = req.query.range ?? "0,10";
 
   // Input validation
   // - Convert input
-  const cnvSkip   = parseInt(skip || 0);
-  const cnvCount  = parseInt(count);
   const cnvRandom = parseInt(random || 0);
   const cnvSearch = search?.toString().toLowerCase().trim();
+  const cnvRange  = range.split(',').map(Number);
 
-  if (isNaN(cnvSkip)) {
-    return res.status(400).json({
-      status: 400,
-      error:  "\'skip\' query must be an integer"
-    });
-  }
-
-  if (isNaN(cnvCount)) {
-    return res.status(400).json({
-      status: 400,
-      error:  "\'count\' query must be an integer"
-    });
-  }
-
-  if (isNaN(cnvRandom)) {
+  if (isNaN(cnvRandom) || cnvRandom > 1 || cnvRandom < 0) {
     return res.status(400).json({
       status: 400,
       error:  "\'random\' query must be 0 or 1"
@@ -140,12 +119,19 @@ puzzlesRouter.get('/', (req, res) => {
     }
   }
 
+  if (isNaN(cnvRange[0]) || isNaN(cnvRange[1])) {
+    return res.status(400).json({
+      status: 400,
+      error: "\'range\' must be in the format <number>,<number>"
+    });
+  }
+
   // Get data
   let data = null;
 
   if (cnvRandom === 1) data = getRandomPuzzle.get();
   else if (cnvSearch !== undefined) data = getPuzzleByName.all(cnvSearch);
-  else data = getPuzzles.all(cnvSkip, cnvCount);
+  else data = getPuzzles.all(cnvRange[0], cnvRange[1]);
 
   // No data found
   if (!data || data.length === 0) {
