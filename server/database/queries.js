@@ -33,6 +33,7 @@ WHERE puzzle_id = ?
 const getPuzzles = database.prepare(`
 SELECT * FROM puzzles
 ORDER BY created
+DESC
 LIMIT ?, ?
 `);
 
