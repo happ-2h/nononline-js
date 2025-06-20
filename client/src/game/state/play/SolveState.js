@@ -166,11 +166,6 @@ export default class SolveState extends State {
     if (this.#cursor.selected) {
       if (this.#mode === 'f') {
         this.#board[this.#cursor.coords.y][this.#cursor.coords.x] = 1;
-
-        if (this.#didWin()) {
-          StateHandler.pop();
-          StateHandler.push(new WinState(this.#board_sol));
-        }
       }
       else if (this.#mode === 'c') {
         this.#board[this.#cursor.coords.y][this.#cursor.coords.x] = 2;
@@ -178,21 +173,26 @@ export default class SolveState extends State {
       else if (this.#mode === 'r') {
         this.#board[this.#cursor.coords.y][this.#cursor.coords.x] = 3;
       }
+
+      if (this.#didWin()) {
+        StateHandler.pop();
+        StateHandler.push(new WinState(this.#board_sol));
+      }
     }
     else if (this.#cursor.unselected) {
       if (this.#mode === 'f') {
         this.#board[this.#cursor.coords.y][this.#cursor.coords.x] = 0;
-
-        if (this.#didWin()) {
-          StateHandler.pop();
-          StateHandler.push(new WinState(this.#board_sol));
-        }
       }
       else if (this.#mode === 'c') {
         this.#board[this.#cursor.coords.y][this.#cursor.coords.x] = 0;
       }
       else if (this.#mode === 'r') {
         this.#board[this.#cursor.coords.y][this.#cursor.coords.x] = 0;
+      }
+
+      if (this.#didWin()) {
+        StateHandler.pop();
+        StateHandler.push(new WinState(this.#board_sol));
       }
     }
   }
