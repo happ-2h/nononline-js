@@ -36,11 +36,11 @@ puzzlesRouter.post('/', (req, res) => {
     !cnvWidth       ||
     isNaN(cnvWidth) ||
     cnvWidth < 2    ||
-    cnvWidth > 16
+    cnvWidth > 15
   ) {
     return res.status(400).json({
       status: 400,
-      error:  "Width must be between 2 and 16"
+      error:  "Width must be between 2 and 15"
     });
   }
 
@@ -48,11 +48,11 @@ puzzlesRouter.post('/', (req, res) => {
     !cnvHeight       ||
     isNaN(cnvHeight) ||
     cnvHeight < 2    ||
-    cnvHeight > 16
+    cnvHeight > 15
   ) {
     return res.status(400).json({
       status: 400,
-      error:  "Height must be between 2 and 16"
+      error:  "Height must be between 2 and 15"
     });
   }
 
