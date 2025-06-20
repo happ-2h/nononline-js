@@ -274,11 +274,11 @@ export default class CreateState extends State {
         if (
           this.#file.title.length > 10 ||
           +this.#file.width < 2   ||
-          +this.#file.width > 16  ||
+          +this.#file.width > 15  ||
           +this.#file.height < 2  ||
-          +this.#file.height > 16
+          +this.#file.height > 15
         ) {
-          this.#label_error.string = "Width and Height must be from 2 to 16";
+          this.#label_error.string = "Width and Height must be from 2 to 15";
           this.init();
         }
         else {
