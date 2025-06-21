@@ -243,7 +243,7 @@ export default class SolveState extends State {
             `${settings.theme}_font`,
             84, 16, 4, 4,
             this.#board_ui.x + y * 8,
-            this.#board_ui.y - 8,
+            this.#board_ui.y - 8 - x * 5,
             4, 4
           );
           // One's place
@@ -251,7 +251,7 @@ export default class SolveState extends State {
             `${settings.theme}_font`,
             80 + (n%10) * 4, 16, 4, 4,
             this.#board_ui.x + y * 8 + 4,
-            this.#board_ui.y - 8,
+            this.#board_ui.y - 8 - x * 5,
             4, 4
           );
         }
@@ -291,7 +291,7 @@ export default class SolveState extends State {
           Renderer.image(
             `${settings.theme}_font`,
             80 + (n%10) * 4, 16, 4, 4,
-            this.#board_ui.x - 4 - x * 4,
+            this.#board_ui.x - 4 - x * 8,
             this.#board_ui.y + y * 8 + 2,
             4, 4
           );
