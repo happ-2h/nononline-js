@@ -49,7 +49,7 @@ export default class PlayState extends State {
             .then(res => res.json())
             .then(data => {
               if (data.status === 200) {
-                StateHandler.push(new SelectPuzzleState([data.data]));
+                StateHandler.push(new SelectPuzzleState([data.data], true));
               }
             })
             .catch(err => console.error(err));

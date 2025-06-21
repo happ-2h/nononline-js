@@ -17,7 +17,14 @@ export default class SelectPuzzleState extends State {
   #puzzleData;
   #shortcuts;
 
-  constructor(data) {
+  #rangeStart;
+
+  #label_msg;
+  #icon_msg;
+
+  #random;
+
+  constructor(data, random=false) {
     super();
 
     this.#inputTimer = 0;
@@ -26,6 +33,13 @@ export default class SelectPuzzleState extends State {
     this.#puzzleData = [...data];
 
     this.#shortcuts = [];
+
+    this.#rangeStart = 0;
+
+    this.#label_msg = new Label("", 24, 21*8);
+    this.#icon_msg  = new Icon(8, 21*8, 24, 8);
+
+    this.#random = random;
 
     data.forEach((puzzle, i) => {
       this.#shortcuts.push(
@@ -40,32 +54,46 @@ export default class SelectPuzzleState extends State {
       );
     });
 
-    this.#shortcuts.push(
-      new Shortcut(
-        24*8,
-        8, 14,
-        new Icon(0, 0, 56, 16),
-        new Label("NEXT", 0, 0),
-        'n',
-        () => {}
-      ),
-      new Shortcut(
-        24*8,
-        24, 14,
-        new Icon(0, 0, 48, 16),
-        new Label("PREVIOUS", 0, 0),
-        'p',
-        () => {}
-      ),
-      new Shortcut(
-        24*8,
-        40, 14,
-        new Icon(0, 0, 40, 0),
-        new Label("RETURN", 0, 0),
-        'q',
-        () => StateHandler.pop()
-      )
-    );
+    if (!random) {
+      this.#shortcuts.push(
+        new Shortcut(
+          24*8,
+          8, 14,
+          new Icon(0, 0, 56, 16),
+          new Label("NEXT", 0, 0),
+          'n',
+          () => {}
+        ),
+        new Shortcut(
+          24*8,
+          24, 14,
+          new Icon(0, 0, 48, 16),
+          new Label("PREVIOUS", 0, 0),
+          'p',
+          () => {}
+        ),
+        new Shortcut(
+          24*8,
+          40, 14,
+          new Icon(0, 0, 40, 0),
+          new Label("RETURN", 0, 0),
+          'q',
+          () => StateHandler.pop()
+        )
+      );
+    }
+    else {
+      this.#shortcuts.push(
+        new Shortcut(
+          24*8,
+          8, 14,
+          new Icon(0, 0, 40, 0),
+          new Label("RETURN", 0, 0),
+          'q',
+          () => StateHandler.pop()
+        )
+      );
+    }
   }
 
   onEnter() {}
@@ -78,64 +106,77 @@ export default class SelectPuzzleState extends State {
 
     if (this.#inputTimer >= this.#inputDelay) {
       // 0 - 9
-      if (KeyHandler.isDown(48)) {
-        if (this.#puzzleData[0]) {
+      for (let i = 48; i <= 57; ++i) {
+        if (KeyHandler.isDown(i)) {
           StateHandler.pop();
-          StateHandler.push(new SolveState(this.#puzzleData[0]));
+          StateHandler.push(new SolveState(this.#puzzleData[i-48]));
         }
       }
-      else if (KeyHandler.isDown(49)) {
-        if (this.#puzzleData[1]) {
-          StateHandler.pop();
-          StateHandler.push(new SolveState(this.#puzzleData[1]));
+      if (!this.#random) {
+        // Next
+        if (KeyHandler.isDown(78)) {
+          this.#inputTimer = 0;
+
+          this.#rangeStart += 10;
+
+          fetch(`http://localhost:5000/api/puzzles?range=${this.#rangeStart},10`)
+            .then(res => res.json())
+            .then(data => {
+              if (data.status === 404) {
+                this.#rangeStart -= 10;
+                this.#label_msg.string = "Final page reached";
+              }
+              else if (data.status === 200) {
+                this.#label_msg.string = "";
+
+                this.#puzzleData = [...data.data];
+
+                data.data.forEach((puzzle, i) => {
+                  this.#shortcuts[i] =
+                    new Shortcut(
+                      8,
+                      8 + i * 16, 16,
+                      new Icon(0, 0, 8, 0),
+                      new Label(puzzle.title, 0, 0, puzzle.id),
+                      `${i}`,
+                      null
+                    );
+                });
+              }
+            })
+            .catch(err => console.error(err));
         }
-      }
-      else if (KeyHandler.isDown(50)) {
-        if (this.#puzzleData[2]) {
-          StateHandler.pop();
-          StateHandler.push(new SolveState(this.#puzzleData[2]));
-        }
-      }
-      else if (KeyHandler.isDown(51)) {
-        if (this.#puzzleData[3]) {
-          StateHandler.pop();
-          StateHandler.push(new SolveState(this.#puzzleData[3]));
-        }
-      }
-      else if (KeyHandler.isDown(52)) {
-        if (this.#puzzleData[4]) {
-          StateHandler.pop();
-          StateHandler.push(new SolveState(this.#puzzleData[4]));
-        }
-      }
-      else if (KeyHandler.isDown(53)) {
-        if (this.#puzzleData[5]) {
-          StateHandler.pop();
-          StateHandler.push(new SolveState(this.#puzzleData[5]));
-        }
-      }
-      else if (KeyHandler.isDown(54)) {
-        if (this.#puzzleData[6]) {
-          StateHandler.pop();
-          StateHandler.push(new SolveState(this.#puzzleData[6]));
-        }
-      }
-      else if (KeyHandler.isDown(55)) {
-        if (this.#puzzleData[7]) {
-          StateHandler.pop();
-          StateHandler.push(new SolveState(this.#puzzleData[7]));
-        }
-      }
-      else if (KeyHandler.isDown(56)) {
-        if (this.#puzzleData[8]) {
-          StateHandler.pop();
-          StateHandler.push(new SolveState(this.#puzzleData[8]));
-        }
-      }
-      else if (KeyHandler.isDown(57)) {
-        if (this.#puzzleData[9]) {
-          StateHandler.pop();
-          StateHandler.push(new SolveState(this.#puzzleData[9]));
+        // Previous
+        else if (KeyHandler.isDown(80)) {
+          this.#inputTimer = 0;
+
+          this.#rangeStart = this.#rangeStart - 10 < 0 ? 0 : this.#rangeStart - 10;
+
+          fetch(`http://localhost:5000/api/puzzles?range=${this.#rangeStart},10`)
+            .then(res => res.json())
+            .then(data => {
+              if (data.status === 404) {
+                this.#label_msg.string = "No puzzles found";
+              }
+              else if (data.status === 200) {
+                this.#label_msg.string = "";
+
+                this.#puzzleData = [...data.data];
+
+                data.data.forEach((puzzle, i) => {
+                  this.#shortcuts[i] =
+                    new Shortcut(
+                      8,
+                      8 + i * 16, 16,
+                      new Icon(0, 0, 8, 0),
+                      new Label(puzzle.title, 0, 0, puzzle.id),
+                      `${i}`,
+                      null
+                    );
+                });
+              }
+            })
+            .catch(err => console.error(err));
         }
       }
       // Quit
@@ -158,5 +199,10 @@ export default class SelectPuzzleState extends State {
     );
 
     this.#shortcuts.forEach(shortcut => shortcut.draw());
+
+    if (this.#label_msg.string.length > 0) {
+      this.#label_msg.draw();
+      this.#icon_msg.draw();
+    }
   }
 };
