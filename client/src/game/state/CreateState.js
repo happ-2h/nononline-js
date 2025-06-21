@@ -16,7 +16,7 @@ import {
 } from "../constants";
 
 export default class CreateState extends State {
-  #state; // 0 = get info, 1 = draw
+  #state; // 0 = get info, 1 = draw, 2 = done
 
   #cursor_input;
   #cursor_draw;
@@ -130,19 +130,25 @@ export default class CreateState extends State {
         .then(data => {
           // Handle error
           if (data.status === 400) {
-            // TODO inform user of error
-            console.log(data.error);
+            alert(data.error);
+            StateHandler.pop();
           }
           // Data accepted
           else if (data.status === 201) {
-            // TODO inform user of acceptance
-            console.log(data.message);
-            console.log(data.puzzle_id);
-            console.log(data.title);
-            StateHandler.pop();
+            this.#state = 2;
+            this.#label_submit.string = "Puzzle created";
+            this.#keyTimer = 0;
+            this.#keyDelay = 2;
           }
         })
         .catch(err => console.error(err));
+      }
+    }
+    else if (this.#state === 2) {
+      this.#keyTimer += dt;
+
+      if (this.#keyTimer >= this.#keyDelay) {
+        StateHandler.pop();
       }
     }
   }
@@ -197,6 +203,32 @@ export default class CreateState extends State {
       this.#statusline.draw();
       this.#label_submit.draw();
       this.#label_width.draw();
+    }
+    else if (this.#state === 2) {
+      this.#board.forEach((row, y) => {
+        row.forEach((num, x) => {
+          if (num > 0) {
+            Renderer.image(
+              `${settings.theme}_theme`,
+              8, 16, TILE_SIZE, TILE_SIZE,
+              this.#board_ui.x + x * TILE_SIZE,
+              this.#board_ui.y + y * TILE_SIZE,
+              TILE_SIZE, TILE_SIZE
+            );
+
+            // Preview
+            Renderer.image(
+              `${settings.theme}_theme`,
+              8, 16, TILE_SIZE, TILE_SIZE,
+              8 + x * 4,
+              8 + y * 4,
+              4, 4
+            );
+          }
+        });
+      });
+
+      this.#label_submit.draw();
     }
   }
 

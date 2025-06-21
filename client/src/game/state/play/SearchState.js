@@ -132,7 +132,7 @@ export default class SearchState extends State {
       if (KeyHandler.isDown(13)) {
         this.#inputTimer = 0;
 
-        fetch(`http://localhost:5000/api/puzzles?search=${this.#searchString}&count=10`)
+        fetch(`http://localhost:5000/api/puzzles?search=${this.#searchString}`)
           .then(res => res.json())
           .then(data => {
             if (

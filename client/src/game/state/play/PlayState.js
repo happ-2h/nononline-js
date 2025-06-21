@@ -30,7 +30,7 @@ export default class PlayState extends State {
         new Label("RECENT", 0, 0),
         't',
         () => {
-          fetch("http://localhost:5000/api/puzzles?count=10")
+          fetch("http://localhost:5000/api/puzzles?range=0,10")
             .then(res => res.json())
             .then(data => {
               if (data.status === 200)
@@ -45,7 +45,7 @@ export default class PlayState extends State {
         new Label("RANDOM", 0, 0),
         'r',
         () => {
-          fetch("http://localhost:5000/api/puzzles?random=1&count=1")
+          fetch("http://localhost:5000/api/puzzles?random=1")
             .then(res => res.json())
             .then(data => {
               if (data.status === 200) {
