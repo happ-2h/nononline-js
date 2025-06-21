@@ -17,11 +17,17 @@ export default class PlayState extends State {
 
   #shortcuts;
 
+  #label_err;
+  #icon_err;
+
   constructor() {
     super();
 
     this.#inputTimer = 0;
     this.#inputDelay = 0.3;
+
+    this.#label_err = new Label("", 24, 21*8);
+    this.#icon_err  = new Icon(8, 21*8, 24, 8);
 
     this.#shortcuts = [
       new Shortcut(
@@ -33,10 +39,16 @@ export default class PlayState extends State {
           fetch("http://localhost:5000/api/puzzles?range=0,10")
             .then(res => res.json())
             .then(data => {
-              if (data.status === 200)
+              if (data.status === 200) {
+                this.#label_err.string = "";
                 StateHandler.push(new SelectPuzzleState(data.data))
+              }
             })
-            .catch(err => console.error(err));
+            .catch(err => {
+              if (err.message === "Failed to fetch") {
+                this.#label_err.string = "Server may be offline"
+              }
+            });
         }
       ),
       new Shortcut(
@@ -49,10 +61,15 @@ export default class PlayState extends State {
             .then(res => res.json())
             .then(data => {
               if (data.status === 200) {
+                this.#label_err.string = "";
                 StateHandler.push(new SelectPuzzleState([data.data], true));
               }
             })
-            .catch(err => console.error(err));
+            .catch(err => {
+              if (err.message === "Failed to fetch") {
+                this.#label_err.string = "Server may be offline"
+              }
+            });
         }
       ),
       new Shortcut(
@@ -124,6 +141,11 @@ export default class PlayState extends State {
         16 * 8, i * 8,
         TILE_SIZE, TILE_SIZE
       );
+    }
+
+    if (this.#label_err.string.length > 0) {
+      this.#icon_err.draw();
+      this.#label_err.draw();
     }
   }
 };

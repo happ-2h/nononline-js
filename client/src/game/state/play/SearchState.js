@@ -1,6 +1,7 @@
 import Cursor       from "../../../gfx/ui/Cursor";
 import Icon         from "../../../gfx/ui/Icon";
 import KeyHandler   from "../../../input/KeyHandler";
+import Label        from "../../../gfx/ui/Label";
 import Renderer     from "../../../gfx/Renderer";
 import settings     from "../../settings";
 import SolveState   from "./SolveState";
@@ -17,7 +18,6 @@ export default class SearchState extends State {
   #icon_slash;
   #cursor;
   #searchString;
-  #errorString;
 
   #state;
 
@@ -26,6 +26,9 @@ export default class SearchState extends State {
   #inputTimer;
   #inputDelay;
 
+  #label_err;
+  #icon_err;
+
   constructor() {
     super();
 
@@ -33,7 +36,9 @@ export default class SearchState extends State {
     this.#cursor = new Cursor(16, 21*8, -1, -1, -1, -1, true, 0.53);
 
     this.#searchString = "";
-    this.#errorString  = "";
+
+    this.#label_err = new Label("", 24, 8);
+    this.#icon_err  = new Icon(8, 8, 24, 8);
 
     this.#state = 0;
 
@@ -89,8 +94,11 @@ export default class SearchState extends State {
 
     this.#cursor.draw();
 
-    if (this.#errorString.length > 0)
-      Renderer.imageText(this.#errorString, 8, 8);
+    if (this.#label_err.string.length > 0) {
+      this.#label_err.draw();
+      this.#icon_err.draw();
+    }
+
 
     if (this.#state === 1) {
       this.#results.forEach((res, y) => {
@@ -139,15 +147,19 @@ export default class SearchState extends State {
               data.status === 400 ||
               data.status === 404
             ) {
-              this.#errorString = data.error;
+              this.#label_err.string = data.error;
             }
             else if (data.status === 200) {
               this.#state = 1;
               this.#results = [...data.data];
-              this.#errorString = "";
+              this.#label_err.string = "";
             }
           })
-          .catch(err => console.error(err));
+          .catch(err => {
+            if (err.message === "Failed to fetch") {
+              this.#label_err.string = "Server may be offline";
+            }
+          });
       }
     }
   }

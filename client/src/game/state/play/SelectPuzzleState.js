@@ -144,7 +144,11 @@ export default class SelectPuzzleState extends State {
                 });
               }
             })
-            .catch(err => console.error(err));
+            .catch(err => {
+              if (err.message === "Failed to fetch") {
+                this.#label_msg.string = "Server may be offline";
+              }
+            });
         }
         // Previous
         else if (KeyHandler.isDown(80)) {
@@ -176,7 +180,11 @@ export default class SelectPuzzleState extends State {
                 });
               }
             })
-            .catch(err => console.error(err));
+            .catch(err => {
+              if (err.message === "Failed to fetch") {
+                this.#label_msg.string = "Server may be offline";
+              }
+            });
         }
       }
       // Quit

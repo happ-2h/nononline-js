@@ -1,5 +1,6 @@
 import Board        from "../../gfx/ui/Board";
 import Cursor       from "../../gfx/ui/Cursor";
+import Icon         from "../../gfx/ui/Icon";
 import KeyHandler   from "../../input/KeyHandler";
 import Label        from "../../gfx/ui/Label";
 import Network      from "../../network/Network";
@@ -25,7 +26,8 @@ export default class CreateState extends State {
   #label_width;
   #label_height;
   #label_submit;
-  #label_error;
+  #label_err;
+  #icon_err;
 
   #board;
   #board_ui;
@@ -48,7 +50,8 @@ export default class CreateState extends State {
     this.#label_width  = new Label("Width", 8, 24);
     this.#label_height = new Label("Height", 8, 40);
     this.#label_submit = new Label("Submit enter", 8, 56);
-    this.#label_error  = new Label("", 8, 8*21);
+    this.#label_err    = new Label("", 24, 8*20);
+    this.#icon_err     = new Icon(8, 8*20, 24, 8);
 
     this.#board_ui    = null;
     this.#cursor_draw = null;
@@ -141,7 +144,9 @@ export default class CreateState extends State {
             this.#keyDelay = 2;
           }
         })
-        .catch(err => console.error(err));
+        .catch(err => {
+          this.#label_err.string = "Server may be offline";
+        });
       }
     }
     else if (this.#state === 2) {
@@ -173,7 +178,7 @@ export default class CreateState extends State {
       this.#label_height.draw();
       this.#label_submit.draw();
       this.#cursor_input.draw();
-      this.#label_error.draw();
+      this.#label_err.draw();
     }
     else if (this.#state === 1) {
       this.#board.forEach((row, y) => {
@@ -203,6 +208,11 @@ export default class CreateState extends State {
       this.#statusline.draw();
       this.#label_submit.draw();
       this.#label_width.draw();
+
+      if (this.#label_err.string.length > 0) {
+        this.#label_err.draw();
+        this.#icon_err.draw();
+      }
     }
     else if (this.#state === 2) {
       this.#board.forEach((row, y) => {
@@ -310,13 +320,14 @@ export default class CreateState extends State {
           +this.#file.height < 2  ||
           +this.#file.height > 15
         ) {
-          this.#label_error.string = "Width and Height must be from 2 to 15";
+          this.#label_err.string = "Width and Height must be from 2 to 15";
           this.init();
         }
         else {
           this.#state = 1;
           this.#keyTimer = 0;
           this.#keyDelay = 1;
+          this.#label_err.string = "";
           this.#board_ui = new Board(8*12, 8*3, +this.#file.width, +this.#file.height);
           this.#statusline = new Statusline(0, 8*21, SCREEN_WIDTH, 8, this.#file.title);
           this.#cursor_draw = new Cursor(
