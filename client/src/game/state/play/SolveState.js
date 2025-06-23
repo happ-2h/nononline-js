@@ -22,6 +22,7 @@ export default class SolveState extends State {
   #nums_cols;
   #nums_rows;
   #lives;
+  #puzzleData;
 
   #statusline;
   #board_ui;
@@ -36,6 +37,8 @@ export default class SolveState extends State {
       r = count
      */
     this.#mode = 'f';
+
+    this.#puzzleData = puzzle;
 
     this.#board =
       new Array(puzzle.height).fill(0)
@@ -176,7 +179,7 @@ export default class SolveState extends State {
 
       if (this.#didWin()) {
         StateHandler.pop();
-        StateHandler.push(new WinState(this.#board_sol));
+        StateHandler.push(new WinState(this.#board_sol, this.#puzzleData));
       }
     }
     else if (this.#cursor.unselected) {
@@ -192,7 +195,7 @@ export default class SolveState extends State {
 
       if (this.#didWin()) {
         StateHandler.pop();
-        StateHandler.push(new WinState(this.#board_sol));
+        StateHandler.push(new WinState(this.#board_sol, this.#puzzleData));
       }
     }
   }

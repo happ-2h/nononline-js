@@ -20,8 +20,12 @@ export default class WinState extends State {
   #inputTimer;
   #inputDelay;
 
-  constructor(pixels) {
+  #downloaded;
+
+  constructor(pixels, puzzleData) {
     super();
+
+    this.#downloaded = false;
 
     this.#shortcuts = [
       new Shortcut(
@@ -36,7 +40,32 @@ export default class WinState extends State {
         new Icon(0, 0, 56, 8),
         new Label("DOWNLOAD", 0, 0),
         'd',
-        () => {}
+        () => {
+          if (!this.#downloaded) this.#downloaded = true;
+          else return;
+
+          // Prepare data
+          // -Magic number + Width and height
+          const arr = new Uint16Array(2 + puzzleData.width);
+
+          arr[0] = (0x6F<<8) | 0x6E;
+          arr[1] = (puzzleData.width<<8) | puzzleData.height;
+          puzzleData.puzzle.split(',')
+          .map(Number)
+          .forEach((n, i) => arr[2 + i] = n);
+
+          // Download
+          const blob = new Blob([arr], { type: "application/octet-stream" });
+
+          const url = window.URL.createObjectURL(blob);
+          const el_a = document.createElement("a");
+          el_a.href = url;
+          el_a.download = `${puzzleData.title}_${puzzleData.created}.nono`;
+          document.body.appendChild(el_a);
+          el_a.style.display = "none";
+          el_a.click();
+          el_a.remove();
+        }
       )
     ];
 
