@@ -16,6 +16,7 @@ export default class SelectPuzzleState extends State {
 
   #puzzleData;
   #shortcuts;
+  #puzzles;
 
   #rangeStart;
 
@@ -33,6 +34,7 @@ export default class SelectPuzzleState extends State {
     this.#puzzleData = [...data];
 
     this.#shortcuts = [];
+    this.#puzzles = [];
 
     this.#rangeStart = 0;
 
@@ -42,7 +44,7 @@ export default class SelectPuzzleState extends State {
     this.#random = random;
 
     data.forEach((puzzle, i) => {
-      this.#shortcuts.push(
+      this.#puzzles.push(
         new Shortcut(
           8,
           8 + i * 16, 16,
@@ -128,11 +130,12 @@ export default class SelectPuzzleState extends State {
               }
               else if (data.status === 200) {
                 this.#label_msg.string = "";
+                this.#puzzles = new Array(data.data.length);
 
                 this.#puzzleData = [...data.data];
 
                 data.data.forEach((puzzle, i) => {
-                  this.#shortcuts[i] =
+                  this.#puzzles[i] =
                     new Shortcut(
                       8,
                       8 + i * 16, 16,
@@ -164,11 +167,12 @@ export default class SelectPuzzleState extends State {
               }
               else if (data.status === 200) {
                 this.#label_msg.string = "";
+                this.#puzzles = new Array(data.data.length);
 
                 this.#puzzleData = [...data.data];
 
                 data.data.forEach((puzzle, i) => {
-                  this.#shortcuts[i] =
+                  this.#puzzles[i] =
                     new Shortcut(
                       8,
                       8 + i * 16, 16,
@@ -207,6 +211,7 @@ export default class SelectPuzzleState extends State {
     );
 
     this.#shortcuts.forEach(shortcut => shortcut.draw());
+    this.#puzzles.forEach(puzzle => puzzle.draw());
 
     if (this.#label_msg.string.length > 0) {
       this.#label_msg.draw();
