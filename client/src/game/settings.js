@@ -1,6 +1,6 @@
 const settings = {
   fullscreen: false,
-  theme: "pokichu"
+  theme: "default"
 };
 
 export default settings;
