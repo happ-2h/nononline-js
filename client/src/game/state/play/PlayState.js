@@ -2,10 +2,10 @@ import Icon              from "../../../gfx/ui/Icon";
 import KeyHandler        from "../../../input/KeyHandler";
 import Label             from "../../../gfx/ui/Label";
 import Renderer          from "../../../gfx/Renderer";
-import Shortcut          from "../../../gfx/ui/Shortcut";
 import SearchState       from "./SearchState";
 import SelectPuzzleState from "./SelectPuzzleState";
 import settings          from "../../settings";
+import Shortcut          from "../../../gfx/ui/Shortcut";
 import State             from "../State";
 import StateHandler      from "../StateHandler";
 
@@ -94,6 +94,11 @@ export default class PlayState extends State {
 
   init() {}
 
+  /**
+   * @brief Updates the play state
+   *
+   * @param {Number} dt - Delta time
+   */
   update(dt) {
     this.#inputTimer += dt;
 
@@ -121,6 +126,9 @@ export default class PlayState extends State {
     }
   }
 
+  /**
+   * @brief Renders the play state
+   */
   render() {
     StateHandler.previous.render();
 

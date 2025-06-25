@@ -62,22 +62,30 @@ export default class TitleScreenState extends State {
   }
 
   onEnter() {}
-  onExit() {}
+  onExit()  {}
 
   init() {}
 
+  /**
+   * @brief Updates the title screen
+   *
+   * @param {Number} dt - Delta time
+   */
   update(dt) {
     this.#inputTimer += dt;
 
     if (this.#inputTimer >= this.#inputDelay) {
+      // Play
       if (KeyHandler.isDown(80)) {
         this.#inputTimer = 0;
         this.#shortcuts[0].callback();
       }
+      // Create
       else if (KeyHandler.isDown(67)) {
         this.#inputTimer = 0;
         this.#shortcuts[1].callback();
       }
+      // Settings
       else if (KeyHandler.isDown(83)) {
         this.#inputTimer = 0;
         this.#shortcuts[2].callback();
@@ -85,6 +93,9 @@ export default class TitleScreenState extends State {
     }
   }
 
+  /**
+   * @brief Renders the title screen
+   */
   render() {
     // Background
     Renderer.image(

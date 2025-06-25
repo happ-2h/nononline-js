@@ -18,13 +18,13 @@ import {
 } from "../../constants";
 
 export default class SolveState extends State {
-  #mode;
+  #mode; // f = fill, c = cross, r = count
 
-  #board;
-  #board_sol;
-  #nums_cols;
-  #nums_rows;
-  #puzzleData;
+  #board;      // Board that holds user data
+  #board_sol;  // Board that holds the solution
+  #nums_cols;  // Numbers for columns
+  #nums_rows;  // Numbers for rows
+  #puzzleData; // Puzzle data from the database
 
   #statusline;
   #board_ui;
@@ -158,27 +158,37 @@ export default class SolveState extends State {
 
   init() {}
 
+  /**
+   * @brief Updates the solve state
+   *
+   * @param {Number} dt - Delta time
+   */
   update(dt) {
     this.#cursor.update(dt);
 
+    // Change to fill mode
     if (KeyHandler.isDown(70)) {
       this.#mode = 'f';
       this.#statusline.mode = "FILL";
     }
+    // Change to cross mode
     else if (KeyHandler.isDown(67)) {
       this.#mode = 'c';
       this.#statusline.mode = "CROSS";
     }
+    // Change to count mode
     else if (KeyHandler.isDown(82)) {
       this.#mode = 'r';
       this.#statusline.mode = "COUNT";
     }
 
+    // Return
     if (KeyHandler.isDown(81))
       this.#shortcut_return.callback();
 
     this.#statusline.pos = `${this.#cursor.coords.y} ${this.#cursor.coords.x}`;
 
+    // Set data based on mode
     if (this.#cursor.selected) {
       if (this.#mode === 'f') {
         this.#board[this.#cursor.coords.y][this.#cursor.coords.x] = 1;
@@ -195,6 +205,7 @@ export default class SolveState extends State {
         StateHandler.push(new WinState(this.#board_sol, this.#puzzleData));
       }
     }
+    // Reset data based on mode
     else if (this.#cursor.unselected) {
       if (this.#mode === 'f') {
         this.#board[this.#cursor.coords.y][this.#cursor.coords.x] = 0;
@@ -213,6 +224,9 @@ export default class SolveState extends State {
     }
   }
 
+  /**
+   * @brief Renders the solve state
+   */
   render() {
     // Background
     Renderer.image(
@@ -328,6 +342,11 @@ export default class SolveState extends State {
     this.#shortcut_return.draw();
   }
 
+  /**
+   * @brief Check if the current move resulted in a win
+   *
+   * @returns true if board matches board_sol; false otherwise
+   */
   #didWin() {
     for (let y = 0; y < this.#board.length; ++y) {
       for (let x = 0; x < this.#board[0].length; ++x) {

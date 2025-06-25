@@ -1,21 +1,27 @@
-import settings from "../game/settings";
 import AssetHandler from "./AssetHandler";
+import settings     from "../game/settings";
 
 let instance = null;
 
 class _ThemeHandler {
-  #themes;
-  #themeIndex;
+  #themes;     // Names of loaded themes
+  #themeIndex; // Currently loaded theme
 
   constructor() {
     if (instance) throw new Error("ThemeHandler singleton reconstructed");
 
-    this.#themes = [];
+    this.#themes     = [];
     this.#themeIndex = 0;
 
     instance = this;
   }
 
+  /**
+   * @brief Loads and reads the list of themes (res/themes/list.txt)
+   *
+   * @returns Promise: resolve if read successfully;
+   *                   reject  if read failed or assets failed to load
+   */
   loadList() {
     return new Promise((res, rej) => {
       fetch("http://localhost:5173/res/img/themes/list.txt")
@@ -31,21 +37,30 @@ class _ThemeHandler {
 
           AssetHandler.load()
             .then(val  => res(val))
-            .catch(err => console.error(err));
+            .catch(err => rej(`Failed to load assets: ${err}`));
         })
         .catch(err => rej(`Failed to load theme list: ${err}`));
     });
   }
 
+  /**
+   * @brief Loads the theme set by the user (src/game/settings.js:3)
+   */
   loadUserTheme() {
-    this.#themeIndex = this.#themes.findIndex(theme => theme === settings.theme);
+    // Get theme defined in settings
+    this.#themeIndex =
+      this.#themes.findIndex(theme => theme === settings.theme);
 
+    // Revert to default if not found
     if (this.#themeIndex === -1) {
-      this.#themeIndex = 0;
-      settings.theme = this.#themes[this.#themeIndex];
+      this.#themeIndex = this.#themes.findIndex(theme => theme === "default");
+      settings.theme   = this.#themes[this.#themeIndex];
     }
   }
 
+  /**
+   * @brief Sets the next theme
+   */
   next() {
     this.#themeIndex =
       this.#themeIndex + 1 >= this.#themes.length
@@ -55,8 +70,9 @@ class _ThemeHandler {
     settings.theme = this.#themes[this.#themeIndex];
   }
 
-  get themes() { return this.#themes; }
-  get themeIndex() { return this.#themeIndex; }
+  // Accessors
+  get themes()       { return this.#themes; }
+  get themeIndex()   { return this.#themeIndex; }
   get currentTheme() { return this.#themes[this.#themeIndex]; }
 };
 

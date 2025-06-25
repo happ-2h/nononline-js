@@ -17,6 +17,11 @@ class _KeyHandler {
     instance = this;
   }
 
+  /**
+   * @brief Handle what happens when a key is pressed
+   *
+   * @param {KeyboardEvent} e - Object holding the event details
+   */
   #keyDown(e) {
     e.preventDefault();
 
@@ -29,14 +34,25 @@ class _KeyHandler {
     this.#keys[e.keyCode] = e.type === "keydown";
   }
 
+  /**
+   * @brief Checks if the given keycode key is down
+   *
+   * @param {Number} keycode - Keycode value
+   *
+   * @returns True if key is down; false otherwise
+   */
   isDown(keycode) {
     return this.#keys[keycode];
   }
 
+  /**
+   * @brief Clears the last keypressed value
+   */
   clearLast() {
     this.#lastPressed = -1;
   }
 
+  // Accessors
   get lastPressed() { return this.#lastPressed; }
 };
 

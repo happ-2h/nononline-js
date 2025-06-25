@@ -14,18 +14,29 @@ import {
 } from "../../constants";
 
 export default class WinState extends State {
+  #pixels; // Pixel data to draw
+
   #shortcuts;
   #label_complete;
-  #pixels;
+
   #inputTimer;
   #inputDelay;
 
-  #downloaded;
+  #downloaded; // Did the user download the puzzle
 
+  /**
+   * @param {Array} pixels     - Pixel data to draw
+   * @param {JSON}  puzzleData - Puzzle data from the database
+   */
   constructor(pixels, puzzleData) {
     super();
 
+    this.#pixels     = pixels;
+    this.#inputTimer = 0;
+    this.#inputDelay = 0.3;
     this.#downloaded = false;
+
+    this.#label_complete = new Label("puzzle completed", 8*12, 8*1);
 
     this.#shortcuts = [
       new Shortcut(
@@ -41,11 +52,12 @@ export default class WinState extends State {
         new Label("DOWNLOAD", 0, 0),
         'd',
         () => {
+          // Prevent spam download
           if (!this.#downloaded) this.#downloaded = true;
           else return;
 
           // Prepare data
-          // -Magic number + Width and height
+          // - Magic number + width and height
           const arr = new Uint16Array(2 + puzzleData.width);
 
           arr[0] = (0x6F<<8) | 0x6E;
@@ -57,9 +69,9 @@ export default class WinState extends State {
           // Download
           const blob = new Blob([arr], { type: "application/octet-stream" });
 
-          const url = window.URL.createObjectURL(blob);
+          const url  = window.URL.createObjectURL(blob);
           const el_a = document.createElement("a");
-          el_a.href = url;
+          el_a.href  = url;
           el_a.download = `${puzzleData.title}_${puzzleData.created}.nono`;
           document.body.appendChild(el_a);
           el_a.style.display = "none";
@@ -68,13 +80,6 @@ export default class WinState extends State {
         }
       )
     ];
-
-    this.#label_complete = new Label("puzzle completed", 8*12, 8*1);
-
-    this.#pixels = pixels;
-
-    this.#inputTimer = 0;
-    this.#inputDelay = 0.3;
   }
 
   onEnter() {}
@@ -82,14 +87,21 @@ export default class WinState extends State {
 
   init() {}
 
+  /**
+   * @brief Updates the win state
+   *
+   * @param {Number} dt - Delta time
+   */
   update(dt) {
     this.#inputTimer += dt;
 
     if (this.#inputTimer >= this.#inputDelay) {
+      // Return
       if (KeyHandler.isDown(81)) {
         this.#inputTimer = 0;
         this.#shortcuts[0].callback();
       }
+      // Download
       else if (KeyHandler.isDown(68)) {
         this.#inputTimer = 0;
         this.#shortcuts[1].callback();
@@ -97,6 +109,9 @@ export default class WinState extends State {
     }
   }
 
+  /**
+   * @brief Renders the win state
+   */
   render() {
     // Background
     Renderer.image(

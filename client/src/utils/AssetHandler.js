@@ -19,6 +19,12 @@ class _AssetHandler {
     instance = this;
   }
 
+  /**
+   * @brief Polls an asset for loading
+   *
+   * @param {String} assetID  - Name of the asset to refer to
+   * @param {String} filename - File name of the asset (pngs only)
+   */
   poll(assetID, filename) {
     ++this.#toLoad;
 
@@ -28,6 +34,12 @@ class _AssetHandler {
       this.#imgs.set(assetID, filename);
   }
 
+  /**
+   * @brief Loads polled assets
+   *
+   * @returns Promise: resolve if all assets loaded successfully;
+   *                   reject  if an asset failed to load
+   */
   load() {
     return new Promise((res, rej) => {
       this.#imgs.forEach((val, key) => {
@@ -38,6 +50,11 @@ class _AssetHandler {
     });
   }
 
+  /**
+   * @brief Ensures the number of polled assets have been loaded
+   *
+   * @param {Function} res - Resolve if all assets have loaded
+   */
   #loadHandler(res) {
     ++this.#loaded >= this.#toLoad && res("Assets successfully loaded");
   }

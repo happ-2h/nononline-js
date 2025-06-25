@@ -15,13 +15,13 @@ import {
 } from "../../constants";
 
 export default class SearchState extends State {
-  #icon_slash;
-  #cursor;
-  #searchString;
+  #icon_slash;   // Search forward slash icon
+  #cursor;       // Input cursor
+  #searchString; // User typed string
 
-  #state;
+  #state;        // 0 = inputting query, 1 = selecting puzzle
 
-  #results;
+  #results;      // Holds puzzles returned
 
   #inputTimer;
   #inputDelay;
@@ -33,7 +33,7 @@ export default class SearchState extends State {
     super();
 
     this.#icon_slash = new Icon(8, 21*8, 40, 8);
-    this.#cursor = new Cursor(16, 21*8, -1, -1, -1, -1, true, 0.53);
+    this.#cursor     = new Cursor(16, 21*8, -1, -1, -1, -1, true, 0.53);
 
     this.#searchString = "";
 
@@ -53,16 +53,24 @@ export default class SearchState extends State {
 
   init() {}
 
+  /**
+   * @brief Updates the search state
+   *
+   * @param {Number} dt - Delta time
+   */
   update(dt) {
     this.#cursor.update(dt);
 
+    // Input search query
     if (this.#state === 0) {
       this.#handleInput(dt);
     }
+    // User puzzle selection
     else if (this.#state === 1) {
       this.#inputTimer += dt;
 
       if (this.#inputTimer >= this.#inputDelay) {
+        // '0' to '9'
         for (let i = 48; i <= 57; ++i) {
           if (KeyHandler.isDown(i)) {
             this.#inputTimer = 0;
@@ -78,6 +86,9 @@ export default class SearchState extends State {
     }
   }
 
+  /**
+   * @brief Renders the search state
+   */
   render() {
     // Background
     Renderer.image(
@@ -99,7 +110,7 @@ export default class SearchState extends State {
       this.#icon_err.draw();
     }
 
-
+    // Puzzle results
     if (this.#state === 1) {
       this.#results.forEach((res, y) => {
         Renderer.imageText(y, 8, 8 + y * 16);
@@ -114,10 +125,16 @@ export default class SearchState extends State {
     }
   }
 
+  /**
+   * @brief Search query input
+   *
+   * @param {Number} dt - Delta time
+   */
   #handleInput(dt) {
     this.#inputTimer += dt;
 
     if (this.#inputTimer >= this.#inputDelay) {
+      // 'a' - 'z'
       for (let i = 65; i <= 90; ++i) {
         if (KeyHandler.isDown(i)) {
           this.#inputTimer = 0;

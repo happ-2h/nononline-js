@@ -26,6 +26,9 @@ export default class Game {
       .catch(err => console.error(err));
   }
 
+  /**
+   * @brief Initializes the game
+   */
   init() {
     Renderer.init(this.#cnv);
 
@@ -35,8 +38,13 @@ export default class Game {
     this.update(performance.now());
   }
 
+  /**
+   * @brief Updates the game
+   *
+   * @param {DOMHighResTimeStamp} ts - End time of the previous frame's rendering
+   */
   update(ts) {
-    const dt = (ts - this.#last) / 1000;
+    const dt   = (ts - this.#last) / 1000;
     this.#last = ts;
 
     requestAnimationFrame(this.update.bind(this));
@@ -46,7 +54,10 @@ export default class Game {
     this.render(dt);
   }
 
-  render(dt) {
+  /**
+   * @brief Renders the game
+   */
+  render() {
     Renderer.clear(this.#cnv.width, this.#cnv.height);
 
     StateHandler.render();

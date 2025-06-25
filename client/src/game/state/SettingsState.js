@@ -2,9 +2,9 @@ import Icon         from "../../gfx/ui/Icon";
 import KeyHandler   from "../../input/KeyHandler";
 import Label        from "../../gfx/ui/Label";
 import Renderer     from "../../gfx/Renderer";
-import State        from "./State";
 import settings     from "../settings";
 import Shortcut     from "../../gfx/ui/Shortcut";
+import State        from "./State";
 import StateHandler from "./StateHandler";
 import ThemeHandler from "../../utils/ThemeHandler";
 
@@ -62,6 +62,11 @@ export default class SettingsState extends State {
 
   init() {}
 
+  /**
+   * @brief Updates the settings state
+   *
+   * @param {Number} dt - Delta time
+   */
   update(dt) {
     this.#inputTimer += dt;
 
@@ -84,6 +89,9 @@ export default class SettingsState extends State {
     }
   }
 
+  /**
+   * @brief Renders the settings state
+   */
   render() {
     StateHandler.previous.render();
 

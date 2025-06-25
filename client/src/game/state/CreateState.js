@@ -17,10 +17,10 @@ import {
 } from "../constants";
 
 export default class CreateState extends State {
-  #state; // 0 = get info, 1 = draw, 2 = done
+  #state;        // 0 = get info, 1 = draw, 2 = done
 
-  #cursor_input;
-  #cursor_draw;
+  #cursor_input; // Cursor for the form
+  #cursor_draw;  // Cursor for drawing on the board
 
   #label_title;
   #label_width;
@@ -29,12 +29,12 @@ export default class CreateState extends State {
   #label_err;
   #icon_err;
 
-  #board;
-  #board_ui;
+  #board;        // Board that holds input data
+  #board_ui;     // Board that is drawn on the screen
 
   #statusline;
 
-  #file;
+  #file;         // Holds data to send to the database
 
   #keyTimer;
   #keyDelay;
@@ -53,9 +53,9 @@ export default class CreateState extends State {
     this.#label_err    = new Label("", 24, 8*20);
     this.#icon_err     = new Icon(8, 8*20, 24, 8);
 
-    this.#board_ui    = null;
-    this.#cursor_draw = null;
-    this.#statusline  = null;
+    this.#board_ui     = null;
+    this.#cursor_draw  = null;
+    this.#statusline   = null;
 
     this.#board = null;
 
@@ -73,6 +73,9 @@ export default class CreateState extends State {
   onEnter() {}
   onExit()  {}
 
+  /**
+   * @brief Initializes the create state
+   */
   init() {
     this.#state = 0;
     this.#cursor_input.x = 64;
@@ -85,11 +88,18 @@ export default class CreateState extends State {
     this.#keyTimer = 0;
   }
 
+  /**
+   * @brief Updates the create state
+   *
+   * @param {Number} dt - Delta time
+   */
   update(dt) {
+    // Form: get puzzle information
     if (this.#state === 0) {
       this.#handleInput(dt);
       this.#cursor_input.update(dt);
     }
+    // Draw on the board
     else if (this.#state === 1) {
       this.#keyTimer += dt;
       this.#cursor_draw.update(dt);
@@ -149,6 +159,7 @@ export default class CreateState extends State {
         });
       }
     }
+    // Prepare to leave the create state
     else if (this.#state === 2) {
       this.#keyTimer += dt;
 
@@ -158,6 +169,9 @@ export default class CreateState extends State {
     }
   }
 
+  /**
+   * @brief Renders the create state
+   */
   render() {
     // Background
     Renderer.image(
@@ -168,6 +182,7 @@ export default class CreateState extends State {
       SCREEN_HEIGHT
     );
 
+    // Draw the form
     if (this.#state === 0) {
       Renderer.imageText(this.#file.title, 64, 8);
       Renderer.imageText(this.#file.width, 64, 24);
@@ -180,6 +195,7 @@ export default class CreateState extends State {
       this.#cursor_input.draw();
       this.#label_err.draw();
     }
+    // Draw the board
     else if (this.#state === 1) {
       this.#board.forEach((row, y) => {
         row.forEach((num, x) => {
@@ -214,6 +230,7 @@ export default class CreateState extends State {
         this.#icon_err.draw();
       }
     }
+    // Draw the final result
     else if (this.#state === 2) {
       this.#board.forEach((row, y) => {
         row.forEach((num, x) => {
@@ -242,6 +259,11 @@ export default class CreateState extends State {
     }
   }
 
+  /**
+   * @brief Handle input
+   *
+   * @param {Number} dt - Delta time
+   */
   #handleInput(dt) {
     this.#keyTimer += dt;
     if (this.#keyTimer < this.#keyDelay) return;
@@ -315,8 +337,8 @@ export default class CreateState extends State {
       if (this.#cursor_input.y === 56) {
         if (
           this.#file.title.length > 10 ||
-          +this.#file.width < 2   ||
-          +this.#file.width > 15  ||
+          +this.#file.width  < 2  ||
+          +this.#file.width  > 15 ||
           +this.#file.height < 2  ||
           +this.#file.height > 15
         ) {
@@ -324,12 +346,12 @@ export default class CreateState extends State {
           this.init();
         }
         else {
-          this.#state = 1;
+          this.#state    = 1;
           this.#keyTimer = 0;
           this.#keyDelay = 1;
           this.#label_err.string = "";
-          this.#board_ui = new Board(8*12, 8*3, +this.#file.width, +this.#file.height);
-          this.#statusline = new Statusline(0, 8*21, SCREEN_WIDTH, 8, this.#file.title);
+          this.#board_ui    = new Board(8*12, 8*3, +this.#file.width, +this.#file.height);
+          this.#statusline  = new Statusline(0, 8*21, SCREEN_WIDTH, 8, this.#file.title);
           this.#cursor_draw = new Cursor(
             8*12,
             8*3,
@@ -340,7 +362,7 @@ export default class CreateState extends State {
             true, 0.53
           );
           this.#label_submit = new Label("Submit   enter", 8*13, 8);
-          this.#label_width = new Label("Clear    c", 8*13, 0);
+          this.#label_width  = new Label("Clear    c", 8*13, 0);
           this.#board =
             new Array(+this.#file.height).fill(0)
             .map(() => new Array(+this.#file.width).fill(0));

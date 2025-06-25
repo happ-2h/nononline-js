@@ -14,17 +14,21 @@ export default class SelectPuzzleState extends State {
   #inputTimer;
   #inputDelay;
 
-  #puzzleData;
+  #puzzleData; // Selected puzzle data
   #shortcuts;
-  #puzzles;
+  #puzzles;    // Puzzles retrieved from the database
 
-  #rangeStart;
+  #rangeStart; // Starting position to fetch puzzles
 
   #label_msg;
   #icon_msg;
 
-  #random;
+  #random;     // Should we get a random puzle
 
+  /**
+   * @param {Array}   data   - Puzzle data
+   * @param {Boolean} random - Should we get a random puzzle
+   */
   constructor(data, random=false) {
     super();
 
@@ -34,7 +38,7 @@ export default class SelectPuzzleState extends State {
     this.#puzzleData = [...data];
 
     this.#shortcuts = [];
-    this.#puzzles = [];
+    this.#puzzles   = [];
 
     this.#rangeStart = 0;
 
@@ -103,6 +107,11 @@ export default class SelectPuzzleState extends State {
 
   init() {}
 
+  /**
+   * @brief Updates the select puzzle state
+   *
+   * @param {Number} dt - Delta time
+   */
   update(dt) {
     this.#inputTimer += dt;
 
@@ -124,6 +133,7 @@ export default class SelectPuzzleState extends State {
           fetch(`http://localhost:5000/api/puzzles?range=${this.#rangeStart},10`)
             .then(res => res.json())
             .then(data => {
+              // Reached the end
               if (data.status === 404) {
                 this.#rangeStart -= 10;
                 this.#label_msg.string = "Final page reached";
@@ -162,6 +172,7 @@ export default class SelectPuzzleState extends State {
           fetch(`http://localhost:5000/api/puzzles?range=${this.#rangeStart},10`)
             .then(res => res.json())
             .then(data => {
+              // Already at page 0
               if (data.status === 404) {
                 this.#label_msg.string = "No puzzles found";
               }
@@ -197,9 +208,11 @@ export default class SelectPuzzleState extends State {
         this.#shortcuts[this.#shortcuts.length - 1].callback();
       }
     }
-
   }
 
+  /**
+   * @brief Renders the select puzzle state
+   */
   render() {
     // Background
     Renderer.image(

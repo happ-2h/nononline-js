@@ -9,22 +9,32 @@ export default class Cursor {
   #x;
   #y;
 
-  #xMin;
-  #xMax;
-  #yMin;
-  #yMax;
+  #xMin;       // Minimum x position the cursor can reach
+  #xMax;       // Maximum x position the cursor can reach
+  #yMin;       // Minimum y position the cursor can reach
+  #yMax;       // Maximum y position the cursor can reach
 
-  #inputTimer;
-  #inputDelay;
+  #inputTimer; // Keeps track of the input time
+  #inputDelay; // Delay of the input
 
-  #selected;
-  #unselected;
+  #selected;   // Is the cursor in "selected" mode
+  #unselected; // Is the cursor in "unselected" mode
 
-  #blink;
-  #blinkTimer;
-  #blinkSpeed;
-  #blinkState;
+  #blink;      // Is the blink effect activated
+  #blinkTimer; // Keeps track of the blinker time
+  #blinkSpeed; // Speed of the blink effect
+  #blinkState; // State of the blink animation
 
+  /**
+   * @param {Number}  x          - x position of the cursor
+   * @param {Number}  y          - y position of the cursor
+   * @param {Number}  xMin       - Minimum x coordinate the cursor can reach
+   * @param {Number}  xMax       - Maximum x coordinate the cursor can reach
+   * @param {Number}  yMin       - Minimum y coordinate the cursor can reach
+   * @param {Number}  yMax       - Maximum y coordinate the cursor can reach
+   * @param {Boolean} blink      - Should the cursor blink
+   * @param {Number}  blinkSpeed - Speed of the cursor blink
+   */
   constructor(
     x=0, y=0,
     xMin=0, xMax=0,
@@ -42,15 +52,20 @@ export default class Cursor {
     this.#inputTimer = 0;
     this.#inputDelay = 0.2;
 
-    this.#selected = false;
+    this.#selected   = false;
     this.#unselected = false;
 
-    this.#blink = blink;
+    this.#blink      = blink;
     this.#blinkTimer = 0;
     this.#blinkSpeed = blinkSpeed;
     this.#blinkState = 0;
   }
 
+  /**
+   * @brief Updates the cursor
+   *
+   * @param {Number} dt - Delta time
+   */
   update(dt) {
     this.#inputTimer += dt;
 
@@ -60,6 +75,7 @@ export default class Cursor {
       this.#yMin > 0 ||
       this.#yMax > 0
     ) {
+      // Cursor movement
       if (this.#inputTimer >= this.#inputDelay) {
         if (KeyHandler.isDown(37) || KeyHandler.isDown(72)) {
           this.#inputTimer = 0;
@@ -87,6 +103,7 @@ export default class Cursor {
         }
       }
 
+      // Selection mode
       if (KeyHandler.isDown(32)) {
         this.#selected = true;
       }
@@ -98,6 +115,7 @@ export default class Cursor {
       else this.#unselected = false;
     }
 
+    // Blink animation
     if (this.#blink) {
       this.#blinkTimer += dt;
 
@@ -108,6 +126,9 @@ export default class Cursor {
     }
   }
 
+  /**
+   * @brief Draws the cursor
+   */
   draw() {
     if (this.#blinkState) {
       Renderer.image(
@@ -118,6 +139,7 @@ export default class Cursor {
     }
   }
 
+  // Accessors
   get coords() {
     return {
       x: (this.#x - this.#xMin) / TILE_SIZE,
@@ -130,6 +152,7 @@ export default class Cursor {
   get selected() { return this.#selected; }
   get unselected() { return this.#unselected; }
 
+  // Mutators
   set x(_x) { this.#x = _x; }
   set y(_y) { this.#y = _y; }
 };
