@@ -1,8 +1,11 @@
 import Board        from "../../../gfx/ui/Board";
 import Cursor       from "../../../gfx/ui/Cursor";
+import Icon         from "../../../gfx/ui/Icon";
 import KeyHandler   from "../../../input/KeyHandler";
+import Label        from "../../../gfx/ui/Label";
 import Renderer     from "../../../gfx/Renderer";
 import settings     from "../../settings";
+import Shortcut     from "../../../gfx/ui/Shortcut";
 import State        from "../State";
 import StateHandler from "../StateHandler";
 import Statusline   from "../../../gfx/ui/Statusline";
@@ -21,12 +24,12 @@ export default class SolveState extends State {
   #board_sol;
   #nums_cols;
   #nums_rows;
-  #lives;
   #puzzleData;
 
   #statusline;
   #board_ui;
   #cursor;
+  #shortcut_return;
 
   constructor(puzzle) {
     super();
@@ -57,7 +60,6 @@ export default class SolveState extends State {
 
     this.#nums_cols = new Array(puzzle.width);
     this.#nums_rows = new Array(puzzle.height);
-    this.#lives = 6;
 
     // Count column bits
     for (let x = 0; x < puzzle.width; ++x) {
@@ -139,6 +141,14 @@ export default class SolveState extends State {
       0.53
     );
 
+    this.#shortcut_return = new Shortcut(
+      8, 19*8, 10,
+      new Icon(0, 0, 40, 0),
+      new Label("QUIT", 0, 0),
+      'q',
+      () => StateHandler.pop()
+    );
+
     // TEMP for debugging
     console.log(this.#board_sol);
   }
@@ -163,6 +173,9 @@ export default class SolveState extends State {
       this.#mode = 'r';
       this.#statusline.mode = "COUNT";
     }
+
+    if (KeyHandler.isDown(81))
+      this.#shortcut_return.callback();
 
     this.#statusline.pos = `${this.#cursor.coords.y} ${this.#cursor.coords.x}`;
 
@@ -312,16 +325,7 @@ export default class SolveState extends State {
     this.#statusline.draw();
     this.#board_ui.draw();
     this.#cursor.draw();
-  }
-
-  #checkWrong(x=-1, y=-1) {
-    if (x < 0 || y < 0) return;
-
-    if (this.#board_sol[y][x] !== 1) {
-      this.#board[y][x] = 0;
-      // TEMP
-      if (--this.#lives <= 0) console.log("game over");
-    }
+    this.#shortcut_return.draw();
   }
 
   #didWin() {
