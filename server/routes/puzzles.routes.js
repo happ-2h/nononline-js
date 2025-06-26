@@ -20,7 +20,7 @@ puzzlesRouter.post('/', (req, res) => {
   if (!nonZero) {
     return res.status(400).json({
       status: 400,
-      error: "Puzzle must not be empty"
+      error:  "Puzzle must not be empty"
     });
   }
 
@@ -117,13 +117,13 @@ puzzlesRouter.get('/', (req, res) => {
     if (cnvSearch.length === 0) {
       return res.status(400).json({
         status: 400,
-        error: "Search query cannot be empty"
+        error:  "Search query cannot be empty"
       });
     }
     else if (cnvSearch.length > 10) {
       return res.status(400).json({
         status: 400,
-        error: "Search query must be 1 to 10 characters"
+        error:  "Search query must be 1 to 10 characters"
       });
     }
   }
@@ -131,7 +131,7 @@ puzzlesRouter.get('/', (req, res) => {
   if (isNaN(cnvRange[0]) || isNaN(cnvRange[1])) {
     return res.status(400).json({
       status: 400,
-      error: "\'range\' must be in the format <number>,<number>"
+      error:  "\'range\' must be in the format <number>,<number>"
     });
   }
 
@@ -146,7 +146,7 @@ puzzlesRouter.get('/', (req, res) => {
   if (!data || data.length === 0) {
     return res.status(404).json({
       status: 404,
-      error: "Not found"
+      error:  "Not found"
     });
   }
 
@@ -169,7 +169,7 @@ puzzlesRouter.get('/puzzle/:id', (req, res) => {
   ) {
     return res.status(400).json({
       status: 400,
-      error: "Incorrect parameter format"
+      error:  "Incorrect parameter format"
     });
   }
 
