@@ -193,7 +193,11 @@ export default class CreateState extends State {
       this.#label_height.draw();
       this.#label_submit.draw();
       this.#cursor_input.draw();
-      this.#label_err.draw();
+
+      if (this.#label_err.string.length > 0) {
+        this.#label_err.draw();
+        this.#icon_err.draw();
+      }
     }
     // Draw the board
     else if (this.#state === 1) {
