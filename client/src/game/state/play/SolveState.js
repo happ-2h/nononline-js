@@ -18,7 +18,7 @@ import {
 } from "../../constants";
 
 export default class SolveState extends State {
-  #mode; // f = fill, c = cross, r = count
+  #mode;       // f = fill, c = cross, r = count
 
   #board;      // Board that holds user data
   #board_sol;  // Board that holds the solution
@@ -34,11 +34,6 @@ export default class SolveState extends State {
   constructor(puzzle) {
     super();
 
-    /*
-      f = fill
-      c = cross
-      r = count
-     */
     this.#mode = 'f';
 
     this.#puzzleData = puzzle;
@@ -51,11 +46,10 @@ export default class SolveState extends State {
       .map(() => new Array(puzzle.width).fill(0));
 
     this.#board_sol.forEach((row, y) => {
-      let solRow = parseInt(puzzle.puzzle.split(",")[y]).toString(2).padStart(puzzle.width, '0');
+      let solRow = parseInt(puzzle.puzzle.split(",")[y])
+        .toString(2).padStart(puzzle.width, '0');
 
-      row.forEach((col, x) => {
-        this.#board_sol[y][x] = +solRow[x];
-      });
+      row.forEach((_, x) => this.#board_sol[y][x] = +solRow[x]);
     });
 
     this.#nums_cols = new Array(puzzle.width);
@@ -72,9 +66,7 @@ export default class SolveState extends State {
           ++n;
         }
         else if (counting) {
-          if (this.#board_sol[y][x] === 1) {
-            ++n;
-          }
+          if (this.#board_sol[y][x] === 1) ++n;
           else {
             this.#nums_cols[x].push(n);
             counting = false;
@@ -97,9 +89,7 @@ export default class SolveState extends State {
           ++n;
         }
         else if (counting) {
-          if (this.#board_sol[y][x] === 1) {
-            ++n;
-          }
+          if (this.#board_sol[y][x] === 1) ++n;
           else {
             this.#nums_rows[y].push(n);
             counting = false;
@@ -124,8 +114,8 @@ export default class SolveState extends State {
     this.#statusline.mode = "FILL";
 
     this.#board_ui = new Board(
-      8 * (38 - puzzle.width),
-      8 * (20 - puzzle.height),
+      (38 - puzzle.width)<<3,
+      (20 - puzzle.height)<<3,
       puzzle.width,
       puzzle.height
     );
@@ -134,7 +124,7 @@ export default class SolveState extends State {
       this.#board_ui.x,
       this.#board_ui.y,
       this.#board_ui.x,
-      this.#board_ui.x + (this.#board_ui.width-1) * TILE_SIZE,
+      this.#board_ui.x + (this.#board_ui.width-1)  * TILE_SIZE,
       this.#board_ui.y,
       this.#board_ui.y + (this.#board_ui.height-1) * TILE_SIZE,
       true,
@@ -142,7 +132,7 @@ export default class SolveState extends State {
     );
 
     this.#shortcut_return = new Shortcut(
-      8, 19*8, 10,
+      8, 152, 10,
       new Icon(0, 0, 40, 0),
       new Label("QUIT", 0, 0),
       'q',
@@ -190,15 +180,12 @@ export default class SolveState extends State {
 
     // Set data based on mode
     if (this.#cursor.selected) {
-      if (this.#mode === 'f') {
+      if (this.#mode === 'f')
         this.#board[this.#cursor.coords.y][this.#cursor.coords.x] = 1;
-      }
-      else if (this.#mode === 'c') {
+      else if (this.#mode === 'c')
         this.#board[this.#cursor.coords.y][this.#cursor.coords.x] = 2;
-      }
-      else if (this.#mode === 'r') {
+      else if (this.#mode === 'r')
         this.#board[this.#cursor.coords.y][this.#cursor.coords.x] = 3;
-      }
 
       if (this.#didWin()) {
         StateHandler.pop();
@@ -207,15 +194,12 @@ export default class SolveState extends State {
     }
     // Reset data based on mode
     else if (this.#cursor.unselected) {
-      if (this.#mode === 'f') {
+      if (this.#mode === 'f')
         this.#board[this.#cursor.coords.y][this.#cursor.coords.x] = 0;
-      }
-      else if (this.#mode === 'c') {
+      else if (this.#mode === 'c')
         this.#board[this.#cursor.coords.y][this.#cursor.coords.x] = 0;
-      }
-      else if (this.#mode === 'r') {
+      else if (this.#mode === 'r')
         this.#board[this.#cursor.coords.y][this.#cursor.coords.x] = 0;
-      }
 
       if (this.#didWin()) {
         StateHandler.pop();
@@ -259,7 +243,7 @@ export default class SolveState extends State {
       if (this.#nums_cols[y].length === 0)
         Renderer.imageText(
           "0",
-          this.#board_ui.x + y * 8 + 2,
+          this.#board_ui.x + (y<<3) + 2,
           this.#board_ui.y - 8,
           true
         );
@@ -272,15 +256,15 @@ export default class SolveState extends State {
           Renderer.image(
             `${settings.theme}_font`,
             84, 16, 4, 4,
-            this.#board_ui.x + y * 8,
+            this.#board_ui.x + (y<<3),
             this.#board_ui.y - 8 - x * 5,
             4, 4
           );
           // One's place
           Renderer.image(
             `${settings.theme}_font`,
-            80 + (n%10) * 4, 16, 4, 4,
-            this.#board_ui.x + y * 8 + 4,
+            80 + ((n%10)<<2), 16, 4, 4,
+            this.#board_ui.x + (y<<3) + 4,
             this.#board_ui.y - 8 - x * 5,
             4, 4
           );
@@ -288,7 +272,7 @@ export default class SolveState extends State {
         else
           Renderer.imageText(
             n,
-            this.#board_ui.x + y * 8 + 2,
+            this.#board_ui.x + (y<<3) + 2,
             this.#board_ui.y - 8 - x * 5,
             true
           );
@@ -301,7 +285,7 @@ export default class SolveState extends State {
         Renderer.imageText(
           '0',
           this.#board_ui.x - 8,
-          this.#board_ui.y + 2 + y * 8,
+          this.#board_ui.y + 2 + (y<<3),
           true
         );
 
@@ -313,16 +297,16 @@ export default class SolveState extends State {
           Renderer.image(
             `${settings.theme}_font`,
             84, 16, 4, 4,
-            this.#board_ui.x - 8 - x * 8,
-            this.#board_ui.y + y * 8 + 2,
+            this.#board_ui.x - 8 - (x<<3),
+            this.#board_ui.y + (y<<3) + 2,
             4, 4
           );
           // One's place
           Renderer.image(
             `${settings.theme}_font`,
-            80 + (n%10) * 4, 16, 4, 4,
-            this.#board_ui.x - 4 - x * 8,
-            this.#board_ui.y + y * 8 + 2,
+            80 + ((n%10)<<2), 16, 4, 4,
+            this.#board_ui.x - 4 - (x<<3),
+            this.#board_ui.y + (y<<3) + 2,
             4, 4
           );
         }
@@ -330,7 +314,7 @@ export default class SolveState extends State {
           Renderer.imageText(
             n,
             this.#board_ui.x - 8 - x * 5,
-            this.#board_ui.y + y * 8 + 2,
+            this.#board_ui.y + (y<<3) + 2,
             true
           );
       }

@@ -19,11 +19,14 @@ export default class Game {
     this.#last = performance.now();
 
     ThemeHandler.loadList()
-      .then(val => {
+      .then(_ => {
         ThemeHandler.loadUserTheme();
         this.init();
       })
-      .catch(err => console.error(err));
+      .catch(err => {
+        this.#cnv.getContext("2d").font = "20px Arial";
+        this.#cnv.getContext("2d").fillText(err, 8, 24);
+      });
   }
 
   /**

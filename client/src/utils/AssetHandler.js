@@ -30,8 +30,7 @@ class _AssetHandler {
 
     const ext = filename.split(".").pop();
 
-    if (ext === "png")
-      this.#imgs.set(assetID, filename);
+    if (ext === "png") this.#imgs.set(assetID, filename);
   }
 
   /**
@@ -44,7 +43,7 @@ class _AssetHandler {
     return new Promise((res, rej) => {
       this.#imgs.forEach((val, key) => {
         TextureHandler.load(key, val)
-          .then(val  => this.#loadHandler(res))
+          .then( _   => this.#loadHandler(res))
           .catch(err => rej(err));
       });
     });

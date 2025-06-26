@@ -26,8 +26,8 @@ export default class PlayState extends State {
     this.#inputTimer = 0;
     this.#inputDelay = 0.3;
 
-    this.#label_err = new Label("", 24, 21*8);
-    this.#icon_err  = new Icon(8, 21*8, 24, 8);
+    this.#label_err = new Label("", 24, 168);
+    this.#icon_err  = new Icon(8, 168, 24, 8);
 
     this.#shortcuts = [
       new Shortcut(
@@ -45,9 +45,8 @@ export default class PlayState extends State {
               }
             })
             .catch(err => {
-              if (err.message === "Failed to fetch") {
+              if (err.message === "Failed to fetch")
                 this.#label_err.string = "Server may be offline"
-              }
             });
         }
       ),
@@ -66,9 +65,8 @@ export default class PlayState extends State {
               }
             })
             .catch(err => {
-              if (err.message === "Failed to fetch") {
+              if (err.message === "Failed to fetch")
                 this.#label_err.string = "Server may be offline"
-              }
             });
         }
       ),
@@ -136,17 +134,17 @@ export default class PlayState extends State {
     Renderer.image(
       `${settings.theme}_theme`,
       0, 56, 8, 8,
-      0, 0, 17*8, SCREEN_HEIGHT
+      0, 0, 136, SCREEN_HEIGHT
     );
 
     this.#shortcuts.forEach(shortcut => shortcut.draw());
 
-    // Background color
+    // Border
     for (let i = 0; i < SCREEN_HEIGHT / TILE_SIZE; ++i) {
       Renderer.image(
         `${settings.theme}_theme`,
         0, 8, TILE_SIZE, TILE_SIZE,
-        16 * 8, i * 8,
+        128, i<<3,
         TILE_SIZE, TILE_SIZE
       );
     }

@@ -28,8 +28,8 @@ export default class Statusline {
     this.#height = height;
 
     this.#label_name = new Label(puzzleName, x, y);
-    this.#label_mode = new Label("INSERT", x + 8*13, y);
-    this.#label_pos  = new Label("00 00", x + 8 * 34, y);
+    this.#label_mode = new Label("INSERT", x + 104, y);
+    this.#label_pos  = new Label("00 00", x + 272, y);
   }
 
   /**

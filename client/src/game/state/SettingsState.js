@@ -100,7 +100,7 @@ export default class SettingsState extends State {
       `${settings.theme}_theme`,
       0, 56, TILE_SIZE, TILE_SIZE,
       0, 0,
-      17*8,
+      136,
       SCREEN_HEIGHT
     );
 
@@ -111,7 +111,7 @@ export default class SettingsState extends State {
       Renderer.image(
         `${settings.theme}_theme`,
         0, 8, TILE_SIZE, TILE_SIZE,
-        16 * 8, i * 8,
+        128, i<<3,
         TILE_SIZE, TILE_SIZE
       );
     }

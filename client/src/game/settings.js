@@ -1,6 +1,6 @@
 const settings = {
   fullscreen: false,
-  theme: "default"
+  theme:      "default"
 };
 
 export default settings;

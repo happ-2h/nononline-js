@@ -23,7 +23,7 @@ export default class SelectPuzzleState extends State {
   #label_msg;
   #icon_msg;
 
-  #random;     // Should we get a random puzle
+  #random;     // Should we get a random puzzle
 
   /**
    * @param {Array}   data   - Puzzle data
@@ -42,8 +42,8 @@ export default class SelectPuzzleState extends State {
 
     this.#rangeStart = 0;
 
-    this.#label_msg = new Label("", 24, 21*8);
-    this.#icon_msg  = new Icon(8, 21*8, 24, 8);
+    this.#label_msg = new Label("", 24, 168);
+    this.#icon_msg  = new Icon(8, 168, 24, 8);
 
     this.#random = random;
 
@@ -51,7 +51,7 @@ export default class SelectPuzzleState extends State {
       this.#puzzles.push(
         new Shortcut(
           8,
-          8 + i * 16, 16,
+          8 + (i<<4), 16,
           new Icon(0, 0, 8, 0),
           new Label(puzzle.title, 0, 0, puzzle.id),
           `${i}`,
@@ -63,7 +63,7 @@ export default class SelectPuzzleState extends State {
     if (!random) {
       this.#shortcuts.push(
         new Shortcut(
-          24*8,
+          192,
           8, 14,
           new Icon(0, 0, 56, 16),
           new Label("NEXT", 0, 0),
@@ -71,7 +71,7 @@ export default class SelectPuzzleState extends State {
           () => {}
         ),
         new Shortcut(
-          24*8,
+          192,
           24, 14,
           new Icon(0, 0, 48, 16),
           new Label("PREVIOUS", 0, 0),
@@ -79,7 +79,7 @@ export default class SelectPuzzleState extends State {
           () => {}
         ),
         new Shortcut(
-          24*8,
+          192,
           40, 14,
           new Icon(0, 0, 40, 0),
           new Label("RETURN", 0, 0),
@@ -91,7 +91,7 @@ export default class SelectPuzzleState extends State {
     else {
       this.#shortcuts.push(
         new Shortcut(
-          24*8,
+          192,
           8, 14,
           new Icon(0, 0, 40, 0),
           new Label("RETURN", 0, 0),
@@ -148,7 +148,7 @@ export default class SelectPuzzleState extends State {
                   this.#puzzles[i] =
                     new Shortcut(
                       8,
-                      8 + i * 16, 16,
+                      8 + (i<<4), 16,
                       new Icon(0, 0, 8, 0),
                       new Label(puzzle.title, 0, 0, puzzle.id),
                       `${i}`,
@@ -158,24 +158,24 @@ export default class SelectPuzzleState extends State {
               }
             })
             .catch(err => {
-              if (err.message === "Failed to fetch") {
+              if (err.message === "Failed to fetch")
                 this.#label_msg.string = "Server may be offline";
-              }
             });
         }
         // Previous
         else if (KeyHandler.isDown(80)) {
           this.#inputTimer = 0;
 
-          this.#rangeStart = this.#rangeStart - 10 < 0 ? 0 : this.#rangeStart - 10;
+          this.#rangeStart = this.#rangeStart - 10 < 0
+            ? 0
+            : this.#rangeStart - 10;
 
           fetch(`http://localhost:5000/api/puzzles?range=${this.#rangeStart},10`)
             .then(res => res.json())
             .then(data => {
               // Already at page 0
-              if (data.status === 404) {
+              if (data.status === 404)
                 this.#label_msg.string = "No puzzles found";
-              }
               else if (data.status === 200) {
                 this.#label_msg.string = "";
                 this.#puzzles = new Array(data.data.length);
@@ -186,7 +186,7 @@ export default class SelectPuzzleState extends State {
                   this.#puzzles[i] =
                     new Shortcut(
                       8,
-                      8 + i * 16, 16,
+                      8 + (i<<4), 16,
                       new Icon(0, 0, 8, 0),
                       new Label(puzzle.title, 0, 0, puzzle.id),
                       `${i}`,
@@ -196,9 +196,8 @@ export default class SelectPuzzleState extends State {
               }
             })
             .catch(err => {
-              if (err.message === "Failed to fetch") {
+              if (err.message === "Failed to fetch")
                 this.#label_msg.string = "Server may be offline";
-              }
             });
         }
       }

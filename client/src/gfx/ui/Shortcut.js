@@ -42,7 +42,7 @@ export default class Shortcut {
   draw() {
     this.#icon.draw();
     this.#label.draw();
-    Renderer.imageText(this.#shortcut, this.#x + this.#width * 8, this.#y);
+    Renderer.imageText(this.#shortcut, this.#x + (this.#width<<3), this.#y);
   }
 
   // Accessors

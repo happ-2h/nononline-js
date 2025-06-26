@@ -104,15 +104,8 @@ export default class Cursor {
       }
 
       // Selection mode
-      if (KeyHandler.isDown(32)) {
-        this.#selected = true;
-      }
-      else this.#selected = false;
-
-      if (KeyHandler.isDown(186)) {
-        this.#unselected = true;
-      }
-      else this.#unselected = false;
+      this.#selected   = KeyHandler.isDown(32);
+      this.#unselected = KeyHandler.isDown(186);
     }
 
     // Blink animation
@@ -147,9 +140,9 @@ export default class Cursor {
     };
   }
 
-  get x() { return this.#x; }
-  get y() { return this.#y; }
-  get selected() { return this.#selected; }
+  get x()          { return this.#x; }
+  get y()          { return this.#y; }
+  get selected()   { return this.#selected; }
   get unselected() { return this.#unselected; }
 
   // Mutators

@@ -8,8 +8,8 @@ export const TILE_SIZE  = 8; // Default tile size
 export const DEBUG  = false; // Show debug data
 
 // Theme constants
-export const BANNER_WIDTH = 40*8;
-export const BANNER_HEIGHT = 9*8;
+export const BANNER_WIDTH = 320;
+export const BANNER_HEIGHT = 72;
 
 // Window dimensions (browser canvas)
 export const WINDOW_WIDTH  = RES_WIDTH  * RES_SCALE * GAME_SCALE;

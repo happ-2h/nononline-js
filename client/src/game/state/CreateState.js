@@ -44,14 +44,14 @@ export default class CreateState extends State {
 
     this.#state = 0;
 
-    this.#cursor_input = new Cursor(8*8, 8, -1, -1, -1, -1, true, 0.53);
+    this.#cursor_input = new Cursor(64, 8, -1, -1, -1, -1, true, 0.53);
 
     this.#label_title  = new Label("Title", 8, 8);
     this.#label_width  = new Label("Width", 8, 24);
     this.#label_height = new Label("Height", 8, 40);
     this.#label_submit = new Label("Submit enter", 8, 56);
-    this.#label_err    = new Label("", 24, 8*20);
-    this.#icon_err     = new Icon(8, 8*20, 24, 8);
+    this.#label_err    = new Label("", 24, 160);
+    this.#icon_err     = new Icon(8, 160, 24, 8);
 
     this.#board_ui     = null;
     this.#cursor_draw  = null;
@@ -106,17 +106,14 @@ export default class CreateState extends State {
 
       this.#statusline.pos = `${this.#cursor_draw.coords.x} ${this.#cursor_draw.coords.y}`;
 
-      if (this.#cursor_draw.selected) {
+      if (this.#cursor_draw.selected)
         this.#board[this.#cursor_draw.coords.y][this.#cursor_draw.coords.x] = 1;
-      }
-      else if (this.#cursor_draw.unselected) {
+      else if (this.#cursor_draw.unselected)
         this.#board[this.#cursor_draw.coords.y][this.#cursor_draw.coords.x] = 0;
-      }
 
       // Clear board
-      if (KeyHandler.isDown(67)) {
+      if (KeyHandler.isDown(67))
         this.#board = this.#board.map(row => row.fill(0));
-      }
 
       // Submit
       if (KeyHandler.isDown(13) && this.#keyTimer >= this.#keyDelay) {
@@ -154,7 +151,7 @@ export default class CreateState extends State {
             this.#keyDelay = 2;
           }
         })
-        .catch(err => {
+        .catch(_ => {
           this.#label_err.string = "Server may be offline";
         });
       }
@@ -163,9 +160,7 @@ export default class CreateState extends State {
     else if (this.#state === 2) {
       this.#keyTimer += dt;
 
-      if (this.#keyTimer >= this.#keyDelay) {
-        StateHandler.pop();
-      }
+      if (this.#keyTimer >= this.#keyDelay) StateHandler.pop();
     }
   }
 
@@ -184,8 +179,8 @@ export default class CreateState extends State {
 
     // Draw the form
     if (this.#state === 0) {
-      Renderer.imageText(this.#file.title, 64, 8);
-      Renderer.imageText(this.#file.width, 64, 24);
+      Renderer.imageText(this.#file.title,  64,  8);
+      Renderer.imageText(this.#file.width,  64, 24);
       Renderer.imageText(this.#file.height, 64, 40);
 
       this.#label_title.draw();
@@ -216,8 +211,8 @@ export default class CreateState extends State {
             Renderer.image(
               `${settings.theme}_theme`,
               8, 16, TILE_SIZE, TILE_SIZE,
-              8 + x * 4,
-              8 + y * 4,
+              8 + (x<<2),
+              8 + (y<<2),
               4, 4
             );
           }
@@ -251,8 +246,8 @@ export default class CreateState extends State {
             Renderer.image(
               `${settings.theme}_theme`,
               8, 16, TILE_SIZE, TILE_SIZE,
-              8 + x * 4,
-              8 + y * 4,
+              8 + (x<<2),
+              8 + (y<<2),
               4, 4
             );
           }
@@ -275,6 +270,7 @@ export default class CreateState extends State {
     // Title
     if (this.#cursor_input.y === 8) {
       if (this.#file.title.length < 10) {
+        // 'a' - 'z'
         for (let i = 65; i <= 90; ++i) {
           if (KeyHandler.isDown(i)) {
             this.#cursor_input.x += 8;
@@ -287,13 +283,17 @@ export default class CreateState extends State {
       // Backspace
       if (KeyHandler.isDown(8)) {
         this.#keyTimer = 0;
-        this.#cursor_input.x = this.#cursor_input.x - 8 < 64 ? 64 : this.#cursor_input.x - 8;
+        this.#cursor_input.x =
+          this.#cursor_input.x - 8 < 64
+            ? 64
+            : this.#cursor_input.x - 8;
         this.#file.title = this.#file.title.slice(0, -1);
       }
     }
     // Width
     else if (this.#cursor_input.y === 24) {
       if (this.#file.width.length < 2) {
+        // '0' - '9'
         for (let i = 48; i <= 57; ++i) {
           if (KeyHandler.isDown(i)) {
             this.#cursor_input.x += 8;
@@ -306,13 +306,17 @@ export default class CreateState extends State {
       // Backspace
       if (KeyHandler.isDown(8)) {
         this.#keyTimer = 0;
-        this.#cursor_input.x = this.#cursor_input.x - 8 < 64 ? 64 : this.#cursor_input.x - 8;
+        this.#cursor_input.x =
+          this.#cursor_input.x - 8 < 64
+            ? 64
+            : this.#cursor_input.x - 8;
         this.#file.width = this.#file.width.slice(0, -1);
       }
     }
     // Height
     else if (this.#cursor_input.y === 40) {
       if (this.#file.height.length < 2) {
+        // '0' - '9'
         for (let i = 48; i <= 57; ++i) {
           if (KeyHandler.isDown(i)) {
             this.#cursor_input.x += 8;
@@ -325,7 +329,10 @@ export default class CreateState extends State {
       // Backspace
       if (KeyHandler.isDown(8)) {
         this.#keyTimer = 0;
-        this.#cursor_input.x = this.#cursor_input.x - 8 < 64 ? 64 : this.#cursor_input.x - 8;
+        this.#cursor_input.x =
+          this.#cursor_input.x - 8 < 64
+            ? 64
+            : this.#cursor_input.x - 8;
         this.#file.height = this.#file.height.slice(0, -1);
       }
     }
@@ -354,19 +361,19 @@ export default class CreateState extends State {
           this.#keyTimer = 0;
           this.#keyDelay = 1;
           this.#label_err.string = "";
-          this.#board_ui    = new Board(8*12, 8*3, +this.#file.width, +this.#file.height);
-          this.#statusline  = new Statusline(0, 8*21, SCREEN_WIDTH, 8, this.#file.title);
+          this.#board_ui    = new Board(96, 24, +this.#file.width, +this.#file.height);
+          this.#statusline  = new Statusline(0, 168, SCREEN_WIDTH, 8, this.#file.title);
           this.#cursor_draw = new Cursor(
-            8*12,
-            8*3,
-            8*12,
-            (8*12) + ((+this.#file.width-1) * 8),
-            8*3,
-            (8*3) + ((+this.#file.height-1) * 8),
+            96,
+            24,
+            96,
+            96 + ((+this.#file.width-1)<<3),
+            24,
+            24 + ((+this.#file.height-1)<<3),
             true, 0.53
           );
-          this.#label_submit = new Label("Submit   enter", 8*13, 8);
-          this.#label_width  = new Label("Clear    c", 8*13, 0);
+          this.#label_submit = new Label("Submit   enter", 104, 8);
+          this.#label_width  = new Label("Clear    c",     104, 0);
           this.#board =
             new Array(+this.#file.height).fill(0)
             .map(() => new Array(+this.#file.width).fill(0));

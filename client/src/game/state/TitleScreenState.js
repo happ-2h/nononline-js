@@ -28,7 +28,7 @@ export default class TitleScreenState extends State {
 
     this.#shortcuts = [
       new Shortcut(
-        SCREEN_WIDTH / 4 + 8,
+        (SCREEN_WIDTH>>2) + 8,
         96,
         17,
         new Icon(0, 0, 8, 0),
@@ -38,7 +38,7 @@ export default class TitleScreenState extends State {
 
       ),
       new Shortcut(
-        SCREEN_WIDTH / 4 + 8,
+        (SCREEN_WIDTH>>2) + 8,
         112,
         17,
         new Icon(0, 0, 16, 0),
@@ -47,7 +47,7 @@ export default class TitleScreenState extends State {
         () => StateHandler.push(new CreateState)
       ),
       new Shortcut(
-        SCREEN_WIDTH / 4 + 8,
+        (SCREEN_WIDTH>>2) + 8,
         128,
         17,
         new Icon(0, 0, 24, 0),
@@ -106,8 +106,6 @@ export default class TitleScreenState extends State {
       SCREEN_HEIGHT
     );
 
-    this.#shortcuts.forEach(shortcut => shortcut.draw());
-
     Renderer.image(
       `${settings.theme}_banner`,
       0,0,
@@ -115,5 +113,7 @@ export default class TitleScreenState extends State {
       0,0,
       BANNER_WIDTH, BANNER_HEIGHT
     );
+
+    this.#shortcuts.forEach(shortcut => shortcut.draw());
   }
 };

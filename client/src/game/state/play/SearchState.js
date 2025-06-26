@@ -15,33 +15,29 @@ import {
 } from "../../constants";
 
 export default class SearchState extends State {
+  #searchString; // User typed string
   #icon_slash;   // Search forward slash icon
   #cursor;       // Input cursor
-  #searchString; // User typed string
+  #label_err;
+  #icon_err;
 
   #state;        // 0 = inputting query, 1 = selecting puzzle
-
   #results;      // Holds puzzles returned
 
   #inputTimer;
   #inputDelay;
 
-  #label_err;
-  #icon_err;
-
   constructor() {
     super();
 
-    this.#icon_slash = new Icon(8, 21*8, 40, 8);
-    this.#cursor     = new Cursor(16, 21*8, -1, -1, -1, -1, true, 0.53);
-
     this.#searchString = "";
 
-    this.#label_err = new Label("", 24, 8);
-    this.#icon_err  = new Icon(8, 8, 24, 8);
+    this.#icon_slash = new Icon(8, 168, 40, 8);
+    this.#cursor     = new Cursor(16, 168, -1, -1, -1, -1, true, 0.53);
+    this.#label_err  = new Label("", 24, 8);
+    this.#icon_err   = new Icon(8, 8, 24, 8);
 
-    this.#state = 0;
-
+    this.#state   = 0;
     this.#results = null;
 
     this.#inputTimer = 0;
@@ -62,15 +58,14 @@ export default class SearchState extends State {
     this.#cursor.update(dt);
 
     // Input search query
-    if (this.#state === 0) {
-      this.#handleInput(dt);
-    }
+    if (this.#state === 0) this.#handleInput(dt);
+
     // User puzzle selection
     else if (this.#state === 1) {
       this.#inputTimer += dt;
 
       if (this.#inputTimer >= this.#inputDelay) {
-        // '0' to '9'
+        // '0' - '9'
         for (let i = 48; i <= 57; ++i) {
           if (KeyHandler.isDown(i)) {
             this.#inputTimer = 0;
@@ -101,7 +96,7 @@ export default class SearchState extends State {
 
     this.#icon_slash.draw();
 
-    Renderer.imageText(this.#searchString, 16, 21*8);
+    Renderer.imageText(this.#searchString, 16, 168);
 
     this.#cursor.draw();
 
@@ -113,13 +108,13 @@ export default class SearchState extends State {
     // Puzzle results
     if (this.#state === 1) {
       this.#results.forEach((res, y) => {
-        Renderer.imageText(y, 8, 8 + y * 16);
-        Renderer.imageText(res.title, 24, 8 + y * 16);
-        Renderer.imageText(`${res.width}x${res.height}`, 8*15, 8 + y*16);
+        Renderer.imageText(y, 8, 8 + (y<<4));
+        Renderer.imageText(res.title, 24, 8 + (y<<4));
+        Renderer.imageText(`${res.width}x${res.height}`, 120, 8 + (y<<4));
         Renderer.imageText(
           `id ${res.puzzle_id.slice(0, 13).toUpperCase()}`,
-          8*22,
-          8 + y * 16
+          176,
+          8 + (y<<4)
         );
       });
     }
@@ -163,9 +158,8 @@ export default class SearchState extends State {
             if (
               data.status === 400 ||
               data.status === 404
-            ) {
+            )
               this.#label_err.string = data.error;
-            }
             else if (data.status === 200) {
               this.#state = 1;
               this.#results = [...data.data];
@@ -173,9 +167,8 @@ export default class SearchState extends State {
             }
           })
           .catch(err => {
-            if (err.message === "Failed to fetch") {
+            if (err.message === "Failed to fetch")
               this.#label_err.string = "Server may be offline";
-            }
           });
       }
     }

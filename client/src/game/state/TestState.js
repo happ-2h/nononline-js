@@ -1,7 +1,7 @@
-import Label      from "../../gfx/ui/Label";
-import Renderer   from "../../gfx/Renderer";
-import settings   from "../settings";
-import State      from "./State";
+import Label    from "../../gfx/ui/Label";
+import Renderer from "../../gfx/Renderer";
+import settings from "../settings";
+import State    from "./State";
 
 import {
   SCREEN_HEIGHT,
@@ -19,12 +19,11 @@ export default class TestState extends State {
   }
 
   onEnter() {}
-  onExit() {}
+  onExit()  {}
 
   init() {}
 
-  update(dt) {
-  }
+  update(dt) {}
 
   render() {
     // Background

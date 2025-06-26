@@ -10,7 +10,7 @@ export default class Icon {
   #sy;
 
   /**
-   * @param {Number} x  - x position to palce the icon
+   * @param {Number} x  - x position to place the icon
    * @param {Number} y  - y position to place the icon
    * @param {Number} sx - Image source x of the icon
    * @param {Number} sy - Image source y of the icon

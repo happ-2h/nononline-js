@@ -120,9 +120,9 @@ class _Renderer {
       else {
         this.image(
           `${settings.theme}_font`,
-          80 + n * 4, sy,
+          80 + (n<<2), sy,
           4, 4,
-          x + cx * 4, y,
+          x + (cx<<2), y,
           4, 4
         );
       }

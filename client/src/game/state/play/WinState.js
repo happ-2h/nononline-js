@@ -36,18 +36,18 @@ export default class WinState extends State {
     this.#inputDelay = 0.3;
     this.#downloaded = false;
 
-    this.#label_complete = new Label("puzzle completed", 8*12, 8*1);
+    this.#label_complete = new Label("puzzle completed", 96, 8);
 
     this.#shortcuts = [
       new Shortcut(
-        8, 21*8, 14,
+        8, 168, 14,
         new Icon(0, 0, 40, 0),
         new Label("RETURN", 0, 0),
         'q',
         () => StateHandler.pop()
       ),
       new Shortcut(
-        8*24, 8*21, 14,
+        192, 168, 14,
         new Icon(0, 0, 56, 8),
         new Label("DOWNLOAD", 0, 0),
         'd',
@@ -130,8 +130,8 @@ export default class WinState extends State {
           Renderer.image(
             `${settings.theme}_theme`,
             8, 16, TILE_SIZE, TILE_SIZE,
-            13 * 8 + x * TILE_SIZE,
-            3 * 8 + y * TILE_SIZE,
+            104 + x * TILE_SIZE,
+            24 + y * TILE_SIZE,
             TILE_SIZE, TILE_SIZE
           );
         }

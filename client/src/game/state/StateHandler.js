@@ -65,7 +65,7 @@ class _StateHandler {
   /**
    * @brief Returns the number of states on the stack
    *
-   * @returns Number of states in the stack
+   * @returns Number of states on the stack
    */
   length() {
     return this.#states.length;

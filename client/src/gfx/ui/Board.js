@@ -29,8 +29,8 @@ export default class Board {
         Renderer.image(
           `${settings.theme}_theme`,
           8, 8, 8, 8,
-          this.#x + x * 8,
-          this.#y + y * 8,
+          this.#x + (x<<3),
+          this.#y + (y<<3),
           8, 8
         );
       }
