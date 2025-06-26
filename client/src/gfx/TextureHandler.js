@@ -28,7 +28,7 @@ class _TextureHandler {
       this.#textures[textureID] = new Image();
       this.#textures[textureID].onerror = () => rej(`Failed to load ${filename}`);
       this.#textures[textureID].onload  = () => res(`${filename} loaded`);
-      this.#textures[textureID].src = `res/img/${filename}`;
+      this.#textures[textureID].src = `res/${filename}`;
     });
   }
 

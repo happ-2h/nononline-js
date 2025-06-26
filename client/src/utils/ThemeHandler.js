@@ -24,7 +24,7 @@ class _ThemeHandler {
    */
   loadList() {
     return new Promise((res, rej) => {
-      fetch("http://localhost:5173/res/img/themes/list.txt")
+      fetch("http://localhost:5173/res/themes/list.txt")
         .then(response => response.text())
         .then(data => {
           data.split('\n').forEach(str => {
