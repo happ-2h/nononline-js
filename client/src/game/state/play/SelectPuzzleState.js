@@ -202,8 +202,9 @@ export default class SelectPuzzleState extends State {
             });
         }
       }
+
       // Quit
-      else if (KeyHandler.isDown(81)) {
+      if (KeyHandler.isDown(81)) {
         this.#inputTimer = 0;
         this.#shortcuts[this.#shortcuts.length - 1].callback();
       }
