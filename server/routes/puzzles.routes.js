@@ -15,6 +15,15 @@ puzzlesRouter.post('/', (req, res) => {
   const { title, width, height, puzzle } = req.body;
 
   // Input validation
+  // - Reject empty puzzles
+  const nonZero = puzzle.some(n => n !== 0);
+  if (!nonZero) {
+    return res.status(400).json({
+      status: 400,
+      error: "Puzzle must not be empty"
+    });
+  }
+
   // - Convert input
   const cnvTitle  = title?.toString()?.trim()?.toLowerCase();
   const cnvWidth  = parseInt(width);
