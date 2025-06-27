@@ -138,9 +138,6 @@ export default class SolveState extends State {
       'q',
       () => StateHandler.pop()
     );
-
-    // TEMP for debugging
-    console.log(this.#board_sol);
   }
 
   onEnter() {}
