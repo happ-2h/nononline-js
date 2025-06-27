@@ -79,7 +79,7 @@
 - <kbd>;</kbd> erase
 
 # Themes showcase
-## Included themes
+## Included Themes
 
 <div align="center">
   <h3>default</h3>
@@ -113,8 +113,8 @@
 | --- | --- |
 | ![pokichu menu](./images/themes/included/pokichu/menu.png) | ![poki gameplay](./images/themes/included/pokichu/gameplay.png) |
 
-## Community themes
+## Community Themes
 
-- Refer to [the wiki]() to get instructions on how to make your own themes
+- Refer to the [Wiki](https://github.com/happ-2h/nononline-js/wiki/Creating-themes) to get instructions on how to make your own themes
 
 <p align="right">(<a href="#readme-top">Back to top</a>)</p>
